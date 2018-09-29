@@ -1,4 +1,18 @@
-#example {
+#animatedData {
     background: #79a391;
+    border: 3px dashed chartreuse;
+    width: 100%;
+    height: 500px;
+    margin-left: -2.5px;
+}
+
+#helloMessage{
     text-align: center;
+    font-family: "Lazy Crazy", fantasy;
+    font-size: xx-large;
+    font-style: inherit;
+}
+
+#aboutMenu{
+    margin-left: 50%;
 }
