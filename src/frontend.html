@@ -10,13 +10,15 @@
 <body>
     <div align="center">
         <div class="w3-container">
-            <div class="w3-display-container" id="toptop">
-                <div class="w3-display-left">Hello, this is GitHub Activity Visualisation</div>
-                <div class="w3-display-middle"><label>Sound Volume<input type="range" min="0" max="100" step="1" value="50"></label></div>
-                <div class="w3-display-right"><a href="frontend.html">About</a></div>
+            <div class="w3-display-container" style="height: 55px">
+                <div class="w3-display-middle">Hello, this is GitHub Activity Visualisation</div>
+                <div class="w3-display-topright top"><label><input type="range" min="0" max="100" step="1" value="50">Volume</label></div>
+                <div class="w3-display-bottomright top"><a href="frontend.html">About</a></div>
             </div>
         </div>
         <canvas id="canvas"></canvas>
+        <p align="center">Info about events</p>
+        <div id="eventfield"></div>
     </div>
 </body>
 </html>

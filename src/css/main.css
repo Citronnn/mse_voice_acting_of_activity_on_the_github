@@ -4,7 +4,13 @@
     height: 620px;
 }
 
-#toptop{
+#eventfield{
     border: dashed 3px black;
-    height: 50px;
+    width: 96%;
+    height: 620px;
+}
+
+.top{
+    margin-top: 0.5%;
+    margin-right: 1%;
 }
