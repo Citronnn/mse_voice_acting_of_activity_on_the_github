@@ -1,6 +1,17 @@
 $(document).ready(function(){
 
     setInterval(function(){
+        if($(window).height()>$('#displaydiv').height())
+            $('#displaydiv').css('min-height',$(window).height()-20+'px');
+        if($(window).width()>$('#displaydiv').width())
+            $('#displaydiv').css('min-width',$(window).width()-20+'px');
+    },0);
+
+    setInterval(function () {
+        $("#a_figure").fadeOut(2000, function(){ $(this).remove(); });
+    },0);
+
+    setInterval(function(){
         let type = Math.floor(Math.random() * (3));
         $("#back_figure").remove();
         createFig(type);
