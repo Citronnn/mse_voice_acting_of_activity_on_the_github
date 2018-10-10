@@ -1,5 +1,10 @@
 #canvas{
     border: dashed 3px black;
     width: 96%;
-    height: 600px;
+    height: 620px;
+}
+
+#toptop{
+    border: dashed 3px black;
+    height: 50px;
 }

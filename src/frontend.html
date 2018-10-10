@@ -2,15 +2,21 @@
 <html>
 <head>
     <title>Visual GitHub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="css/w3.css"/>
     <script src="js/main.js"></script>
 </head>
 <body>
-    <div class="w3-display-container" align="center">
-        <p class="w3-display-topleft">Hello, this is GitHub Activity Visualisation</p>
-        <label>Sound Volume<input type="range" min="0" max="100" step="1" value="50"></label>
-        <a href="frontend.html">About</a>
-        <div class="w3-display-middle" id="canvas"></div>
+    <div align="center">
+        <div class="w3-container">
+            <div class="w3-display-container" id="toptop">
+                <div class="w3-display-left">Hello, this is GitHub Activity Visualisation</div>
+                <div class="w3-display-middle"><label>Sound Volume<input type="range" min="0" max="100" step="1" value="50"></label></div>
+                <div class="w3-display-right"><a href="frontend.html">About</a></div>
+            </div>
+        </div>
+        <canvas id="canvas"></canvas>
     </div>
 </body>
 </html>
