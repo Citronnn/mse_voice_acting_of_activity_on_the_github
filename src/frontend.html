@@ -2,14 +2,15 @@
 <html>
 <head>
     <title>Visual GitHub</title>
-    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/main.css"/>
     <script src="js/main.js"></script>
 </head>
 <body>
-    <div id="helloMessage">
-        Hello, this is GitHub Activity Visualisation
-        <a href="frontend.html" id="aboutMenu">About</a>
+    <div class="w3-display-container" align="center">
+        <p class="w3-display-topleft">Hello, this is GitHub Activity Visualisation</p>
+        <label>Sound Volume<input type="range" min="0" max="100" step="1" value="50"></label>
+        <a href="frontend.html">About</a>
+        <div class="w3-display-middle" id="canvas"></div>
     </div>
-    <canvas id="animatedData"></canvas>
 </body>
 </html>
