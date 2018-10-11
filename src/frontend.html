@@ -2,13 +2,26 @@
 <html>
 <head>
     <title>Visual GitHub</title>
-    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="css/w3.css"/>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="js/displayFig.js"></script>
     <link rel='stylesheet' href='css/displayFig.css'>
     <script src="js/main.js"></script>
 </head>
 <body>
-    <div id="displaydiv"></div>
+    <div align="center">
+        <div class="w3-container">
+            <div class="w3-display-container" style="height: 55px">
+                <div class="w3-display-middle">Visual activity on GitHub</div>
+                <div class="w3-display-topright top"><label><input type="range" min="0" max="100" step="1" value="50">Volume</label></div>
+                <div class="w3-display-bottomright top"><a href="frontend.html">About</a></div>
+            </div>
+        </div>
+        <div id="displaydiv"></div>
+        <p align="center">Info about events</p>
+        <div id="eventfield"></div>
+    </div>
 </body>
 </html>
