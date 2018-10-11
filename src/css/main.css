@@ -1,4 +1,15 @@
-#example {
-    background: #79a391;
-    text-align: center;
+#canvas{
+    border: dashed 3px black;
+    height: 620px;
+}
+
+#eventfield{
+    border: dashed 3px black;
+    width: 96%;
+    height: 620px;
+}
+
+.top{
+    margin-top: 0.5%;
+    margin-right: 1%;
 }

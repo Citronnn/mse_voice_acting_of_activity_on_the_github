@@ -1,0 +1,21 @@
+#main_figure{
+    border:1px solid;
+    background-color: aqua;
+    position:absolute;
+    display: flex;
+    justify-content: center; /*Центрирование по горизонтали*/
+    align-items: center;
+    text-align: center;
+
+}
+#displaydiv{
+    width: 96%;
+    height:0px;
+    border:solid 2px;
+    background-color: darksalmon;
+}
+
+#back_figure{
+    background-color: beige;
+    position:absolute;
+}
