@@ -2,9 +2,7 @@ $(document).ready(function(){
 
     setInterval(function(){
         if($(window).height()>$('#displaydiv').height())
-            $('#displaydiv').css('min-height',$(window).height()-20+'px');
-        if($(window).width()>$('#displaydiv').width())
-            $('#displaydiv').css('min-width',$(window).width()-20+'px');
+            $('#displaydiv').css('min-height',$(window).height()-55+'px');
     },0);
 
     setInterval(function () {
@@ -46,8 +44,8 @@ $(document).ready(function(){
 
     function rands(){
         let rands_array=[];
-        rands_array.push(Math.floor(Math.random() * ($('#displaydiv').width() - 370)+100));
-        rands_array.push(Math.floor(Math.random() * ($('#displaydiv').height() - 370)+100));
+        rands_array.push(Math.floor(Math.random() * ($('#displaydiv').width() - 250)+100));
+        rands_array.push(Math.floor(Math.random() * ($('#displaydiv').height() - 250)+100));
         rands_array.push(Math.floor(Math.random() * (150 - 40 + 1)+40));
         return rands_array;
     }
