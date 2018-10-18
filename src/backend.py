@@ -242,7 +242,7 @@ class AbstractClient:
 
     def send_raw(self, message: str) -> None:
         try:
-            Debug.send(f'Send to {self.id}: {message}')
+            Debug.send(f'Send to {self.id}: {"{ JSON event }"}')
             self.handler.send_message(message)
         except BrokenPipeError:
             Debug.error(f'Broken pipe error send raw id = {self.id}')
@@ -250,7 +250,7 @@ class AbstractClient:
     def send(self, obj: dict) -> None:
         try:
             msg = dumps(obj)
-            Debug.send(f'Send to {self.id}: {msg}')
+            Debug.send(f'Send to {self.id}: {"{ JSON event }"}')
             self.handler.send_message(msg)
         except BrokenPipeError:
             Debug.error(f'Broken pipe error send id = {self.id}')
