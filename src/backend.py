@@ -8,7 +8,7 @@ from github3.git import ShortCommit
 from github3.repos.repo import Repository
 from github3.repos.commit import RepoCommit
 from pprint import pprint
-from threading import Thread
+from threading import Thread, Lock
 from typing import List, Dict
 from time import sleep
 from datetime import datetime, timedelta
@@ -21,6 +21,7 @@ print("Requests remaining this hour:", git.ratelimit_remaining, '\n')
 
 event_queue: List[Event] = []
 list_to_send: List[dict] = []
+lock: Lock = Lock()
 loop = 0
 
 
@@ -55,7 +56,7 @@ def download_events():
 
 
 def handle_events():
-    global event_queue, loop
+    global event_queue, loop, list_to_send, lock
 
     print('Handle events started')
 
@@ -103,9 +104,21 @@ def handle_events():
                 time_to_send = datetime(now.year, now.month, now.day,
                                         time_created.hour, time_created.minute, time_created.second)
 
-                time_to_send = time_to_send + timedelta(hours=3, minutes=5)
+                with lock:
+                    time_to_send = time_to_send + timedelta(hours=3, minutes=5, seconds=30)
 
-                print(time_to_send, event.type, total_commits, event.repo['name'], url)
+                list_to_send += [
+                    {
+                        'time': time_to_send,
+                        'owner': repo_owner,
+                        'repo': repo_subname,
+                        'commits': total_commits,
+                        'url': url,
+                        'hash': commit_hash
+                    }
+                ]
+
+                # print(time_to_send, event.type, total_commits, event.repo['name'], url)
                 # if event.payload['size'] > 1:
                 #     print(event.payload['size'], event.payload['distinct_size'], len(event.payload['commits']))
 
@@ -136,9 +149,34 @@ def handle_events():
             pass
 
 
-
 def send_events():
-    ...
+
+    print('Send events started')
+
+    global list_to_send
+
+    while True:
+
+        for item in list_to_send:
+            cur_time: datetime = item['time']
+            same_time_list = [i for i in list_to_send if i['time'] == cur_time]
+            if len(same_time_list) > 1:
+
+                divider = len(same_time_list)
+                for i, same_item in enumerate(same_time_list):
+                    same_item['time'] += timedelta(milliseconds=i / divider * 1000)
+
+        now = datetime.now()
+
+        with lock:
+            list_to_send_now = [i for i in list_to_send if i['time'] < now]
+            list_to_send = [i for i in list_to_send if i['time'] >= now]
+
+        for send_item in list_to_send_now:
+            print('send', send_item['time'])
+            server.broadcast(send_item)
+
+        sleep(0.01)
 
 
 class Debug:
@@ -232,11 +270,13 @@ class VisualGithubClient(AbstractClient):
         pass
 
     def left(self, srv: 'Server') -> None:
+        del srv.clients[self.id]
         Debug.client_left('DEL VISUAL GITHUB', self.id)
 
 
 Thread(target=download_events, name="Download events").start()
 Thread(target=handle_events, name="Handle events").start()
+Thread(target=send_events, name="Send events").start()
 
 
 class Server:
