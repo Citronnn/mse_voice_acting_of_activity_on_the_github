@@ -1,7 +1,5 @@
 
 # Visual GitHub
 
-Необходимые библиотеки для Python:  
-pip install bottle  
-pip install websocket-server  
-pip install github3.py  
+Установка необходимых библиотек для Python:  
+pip install bottle github3.py websocket-server
