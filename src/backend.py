@@ -174,6 +174,7 @@ def send_events():
 
         for send_item in list_to_send_now:
             print('send', send_item['time'])
+            del send_item['time']
             server.broadcast(send_item)
 
         sleep(0.01)
