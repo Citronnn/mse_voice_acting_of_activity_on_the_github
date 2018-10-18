@@ -368,8 +368,7 @@
 //Creation ReconnectingWebSocket
 function WebSocketTest() {
 
-    var ws = new ReconnectingWebSocket("ws://127.0.0.1:8000");
-    alert("ReconnectingWebSocket created");
+    var ws = new ReconnectingWebSocket("ws://127.0.0.1:11001");
     ws.onopen = function() {
         ws.send("Message to send");
     };
@@ -384,3 +383,4 @@ function WebSocketTest() {
     };
 
 }
+
