@@ -60,11 +60,11 @@ def handle_events():
 
     print('Handle events started')
 
-    logins_path = 'files/logins.json'
-    repos_path = 'files/repos.json'
+    # logins_path = 'files/logins.json'
+    # repos_path = 'files/repos.json'
 
-    logins = load(open(logins_path))
-    repos = load(open(repos_path))
+    # logins = load(open(logins_path))
+    # repos = load(open(repos_path))
     loop = 0
     while True:
         if len(event_queue) == 0:
@@ -130,13 +130,13 @@ def handle_events():
 
                 continue
 
-                logins[repo_owner] = logins.get(repo_owner, 0) + total_commits
+                # logins[repo_owner] = logins.get(repo_owner, 0) + total_commits
 
-                repos_info = repos.get(repo_owner, {})
-                if repo_subname not in repos_info.keys():
-                    repos_info[repo_subname] = 0
-                repos_info[repo_subname] = repos_info.get(repo_subname, 0) + total_commits
-                repos[repo_owner] = repos_info
+                # repos_info = repos.get(repo_owner, {})
+                # if repo_subname not in repos_info.keys():
+                #     repos_info[repo_subname] = 0
+                # repos_info[repo_subname] = repos_info.get(repo_subname, 0) + total_commits
+                # repos[repo_owner] = repos_info
 
             except NotFoundError:
                 pass
