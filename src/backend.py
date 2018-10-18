@@ -9,16 +9,18 @@ from github3.repos.repo import Repository
 from github3.repos.commit import RepoCommit
 from pprint import pprint
 from threading import Thread
-from typing import List
+from typing import List, Dict
 from time import sleep
-from datetime import datetime
+from datetime import datetime, timedelta
 from json import load, dump, loads, dumps
+from json.decoder import JSONDecodeError
 from websocket_server import WebsocketServer, WebSocketHandler
 
 git = GitHub(token="78424da6d275052ec0cd159497b68ff34c06b1f2")
 print("Requests remaining this hour:", git.ratelimit_remaining, '\n')
 
 event_queue: List[Event] = []
+list_to_send: List[dict] = []
 loop = 0
 
 
@@ -46,8 +48,10 @@ def download_events():
         except ConnectionAbortedError:
             print("Connection aborted error occurred")
 
+        print(f'{event_queue[-1].created_at.time()}-{event_queue[0].created_at.time()}, events: {len(event_queue)}, pushes: {sum(event.type == "PushEvent" for event in event_queue)}')
+
         sleep(10)
-        print(str(datetime.now())[:-7], loop)
+        #print(str(datetime.now())[:-7], loop)
 
 
 def handle_events():
@@ -57,11 +61,9 @@ def handle_events():
 
     logins_path = 'files/logins.json'
     repos_path = 'files/repos.json'
-    repositories_path = 'files/repositories.json'
 
     logins = load(open(logins_path))
     repos = load(open(repos_path))
-    repositories = {k: set(v['list']) for k, v in load(open(repositories_path)).items()}
     loop = 0
     while True:
         if len(event_queue) == 0:
@@ -69,7 +71,7 @@ def handle_events():
             continue
 
         loop += 1
-        if loop % 1000 == 0:
+        if loop % 1000 == 0 and 0:
             print()
             sorted_logins = sorted([x for x in logins.items()], key=lambda x: -x[1])
             for place, (login, value) in enumerate(sorted_logins[:10], 1):
@@ -81,10 +83,9 @@ def handle_events():
             print("\nRequests remaining this hour:", git.ratelimit_remaining, '\n')
             dump(logins, open(logins_path, 'w'), indent=4)
             dump(repos, open(repos_path, 'w'), indent=4)
-            dump({k: {'total': len(v), 'list': list(v)} for k, v in repositories.items()},
-                 open(repositories_path, 'w'), indent=4)
 
         event: Event = event_queue.pop()
+
         if event.type == 'PushEvent' and event.payload['size'] > 0 and event.public:
             try:
                 time_created = event.created_at.time()
@@ -97,7 +98,14 @@ def handle_events():
                 total_commits = len(event.payload['commits'])
                 commit_hash = event.payload['commits'][-1]['sha']
                 url = f'https://github.com/{repo_name}/commit/{commit_hash}'
-                # print(time_created, event.type, total_commits, event.repo['name'], url)
+
+                now: datetime = datetime.now() - timedelta(hours=3, minutes=5)
+                time_to_send = datetime(now.year, now.month, now.day,
+                                        time_created.hour, time_created.minute, time_created.second)
+
+                time_to_send = time_to_send + timedelta(hours=3, minutes=5)
+
+                print(time_to_send, event.type, total_commits, event.repo['name'], url)
                 # if event.payload['size'] > 1:
                 #     print(event.payload['size'], event.payload['distinct_size'], len(event.payload['commits']))
 
@@ -107,6 +115,8 @@ def handle_events():
                 # print(commit.additions)
                 # print(commit.deletions)
 
+                continue
+
                 logins[repo_owner] = logins.get(repo_owner, 0) + total_commits
 
                 repos_info = repos.get(repo_owner, {})
@@ -115,19 +125,26 @@ def handle_events():
                 repos_info[repo_subname] = repos_info.get(repo_subname, 0) + total_commits
                 repos[repo_owner] = repos_info
 
-                for commit in event.payload['commits']:
-                    repositories[repo_subname] = repositories.get(repo_subname, set()) | {commit['sha']}
-
             except NotFoundError:
                 pass
+
+            except JSONDecodeError:
+                pass
+
         else:
             # print(event.type)
             pass
 
 
+
+def send_events():
+    ...
+
+
 class Debug:
-    Debug = 0
+    Debug = 1
     Send = 1
+    Connected = 1
     ClientLeft = 1
     Errors = 1
 
@@ -138,6 +155,15 @@ class Debug:
     else:
         @staticmethod
         def send(*args, **kwargs):
+            pass
+
+    if Connected:
+        @staticmethod
+        def connected(*args, **kwargs):
+            print(*args, **kwargs)
+    else:
+        @staticmethod
+        def connected(*args, **kwargs):
             pass
 
     if ClientLeft:
@@ -209,20 +235,68 @@ class VisualGithubClient(AbstractClient):
         Debug.client_left('DEL VISUAL GITHUB', self.id)
 
 
-
-
 Thread(target=download_events, name="Download events").start()
 Thread(target=handle_events, name="Handle events").start()
 
 
+class Server:
+
+    if Debug.Debug:
+        ip = '127.0.0.1'
+        local_ip = '127.0.0.1'
+
+    else:
+        ip = '188.134.82.95'
+        local_ip = '192.168.0.100'
+
+    port = 11001
+
+    def __init__(self):
+
+        self.server = WebsocketServer(Server.port, Server.local_ip)
+        self.server.set_fn_new_client(self.new_client)
+        self.server.set_fn_client_left(self.client_left)
+        self.server.set_fn_message_received(self.message_received)
+
+        self.clients: Dict[int, AbstractClient] = {}
+
+    def run(self):
+        self.server.run_forever()
+
+    # Called for every client connecting (after handshake)
+    def new_client(self, client, _):
+        Debug.connected(f'New client connected and was given id {client["id"]}')
+        new_client = VisualGithubClient(client['id'], client['handler'])
+        client['client'] = new_client
+        self.clients[new_client.id] = new_client
+
+    # Called for every client disconnecting
+    def client_left(self, client, _):
+
+        if client is None:
+            return
+
+        Debug.client_left(f'Client {client["id"]} disconnected')
+        try:
+            client['client'].left(self)
+        except KeyError:
+            Debug.error(f'Key error possibly double deleting in client left id = {client["id"]}')
+        except ValueError:
+            Debug.error(f'Value error possibly double deleting in client left id = {client["id"]}')
+
+    # Called when a client sends a message
+    def message_received(self, client, _, message):
+        if client is None:
+            return
+        message = message.encode('ISO-8859-1').decode()
+        client['client'].receive(self, message, client)
+
+    def broadcast(self, message: dict):
+        for client in self.clients.values():
+            client.send(message)
+
+
+server = Server()
+Thread(target=lambda: server.run(), name='WebSocket server').start()
+
 print("\nRequests (after) remaining this hour:", git.ratelimit_remaining)
-
-
-def check(reply: str, clue: str):
-    lines = [i.strip() for i in reply.splitlines()]
-    first_line_length = len(lines[0])
-    if not all(len(line) == first_line_length for line in lines[1:]):
-        return False
-    if set("".join(lines)) != 2:
-        return False
-    return True
