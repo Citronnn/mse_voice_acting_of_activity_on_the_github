@@ -9,10 +9,10 @@
 
 }
 #displaydiv{
-    width: 96%;
+    width: 0px;
     height:0px;
     border:solid 2px;
-    background-color: darksalmon;
+    background-color: #e8e8e7;
 }
 
 #back_figure{
