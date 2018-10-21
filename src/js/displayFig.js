@@ -40,7 +40,7 @@ $(document).ready(function(){
     setInterval(function () {
         $("#a_figure").animate({
             "opacity":"0"
-        },2000);
+        },1500);
     },0);
 
 
