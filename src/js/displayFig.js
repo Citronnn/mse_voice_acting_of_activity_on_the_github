@@ -36,8 +36,11 @@ $(document).ready(function(){
     },0);
 
     setInterval(function () {
-        $("#a_figure").fadeOut(2000, function(){ $(this).remove(); });
+        $("#a_figure").animate({
+            "opacity":"0"
+        },2000);
     },0);
+
 
     setInterval(function(){
         let type = Math.floor(Math.random() * (3));
@@ -70,6 +73,13 @@ $(document).ready(function(){
             "height":"+=50px",
             "opacity":"0"
         },1000);
+        life_of_fig();
+    }
+    function life_of_fig() {
+        setTimeout(delFig,27000);
+    }
+    function delFig() {
+        $("#a_figure").remove();
     }
 
     function rands(){
