@@ -1,5 +1,18 @@
 $(document).ready(function(){
+    let colors=[];
+    let colors_white=[];
+    let colors_black=[];
 
+    $('#changecolors').click(function () {
+        if( $('body').css('background-color') == 'rgb(255, 255, 255)') {
+            $('body').css('background-color', '#292929');
+            $('#displaydiv').css('background-color', '#363535');
+        }
+        else{
+            $('body').css('background-color','white');
+            $('#displaydiv').css('background-color', '#e8e8e7');
+        }
+    });
     setInterval(function(){
         if($(window).height()>$('#displaydiv').height())
             $('#displaydiv').css('min-height',$(window).height()-55+'px');
@@ -30,7 +43,7 @@ $(document).ready(function(){
             transform: rotate(${rot}deg);"></div>
             <a href="#" id="a_figure"><div id ="main_figure" style="width:${rand_array[2]}px;
             height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
-            transform: rotate(${rot}deg);">
+            transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};">
             <p id ="text_figure" style="transform: rotate(${-rot}deg)">kek</p></div></a>`);
         $("#back_figure").animate({
             "width": "+=50px",
@@ -47,6 +60,7 @@ $(document).ready(function(){
         rands_array.push(Math.floor(Math.random() * ($('#displaydiv').width() - 250)+100));
         rands_array.push(Math.floor(Math.random() * ($('#displaydiv').height() - 250)+100));
         rands_array.push(Math.floor(Math.random() * (150 - 40 + 1)+40));
+        rands_array.push(Math.floor(Math.random() * (50)));
         return rands_array;
     }
 });
