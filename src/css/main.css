@@ -9,6 +9,23 @@
     margin-right: 18%;
 }
 
+#displaydiv{
+    transition: background-color 0.5s ease;
+}
+
+#VA{
+     transition: color 0.5s ease;
+}
+
+#IE{
+    transition: color 0.5s ease;
+}
+
+#bar{
+    transition: color 0.5s ease;
+}
+
 body{
     background-color: white;
+    transition: background-color 0.5s ease;
 }
