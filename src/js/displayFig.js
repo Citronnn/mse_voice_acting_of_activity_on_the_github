@@ -25,6 +25,7 @@ $(document).ready(function(){
         $('#displaydiv').css('background-color', '#363535');
         $('#VA').css('color', '#ffffff');
         $('#IE').css('color', '#ffffff');
+        $('#bar').css('color', '#ffffff');
     });
 
     $('#changecolors2').click(function () {
@@ -32,6 +33,7 @@ $(document).ready(function(){
         $('#displaydiv').css('background-color', '#e8e8e7');
         $('#VA').css('color', '#000000');
         $('#IE').css('color', '#000000');
+        $('#bar').css('color', '#000000');
     });
 
     setInterval(function(){
