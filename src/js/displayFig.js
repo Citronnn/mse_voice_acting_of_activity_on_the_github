@@ -23,11 +23,15 @@ $(document).ready(function(){
     $('#changecolors1').click(function () {
         $('body').css('background-color', '#292929');
         $('#displaydiv').css('background-color', '#363535');
+        $('#VA').css('color', '#ffffff');
+        $('#IE').css('color', '#ffffff');
     });
 
     $('#changecolors2').click(function () {
         $('body').css('background-color','white');
         $('#displaydiv').css('background-color', '#e8e8e7');
+        $('#VA').css('color', '#000000');
+        $('#IE').css('color', '#000000');
     });
 
     setInterval(function(){
