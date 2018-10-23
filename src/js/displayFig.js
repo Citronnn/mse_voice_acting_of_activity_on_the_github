@@ -20,16 +20,16 @@ $(document).ready(function(){
         "#669900","#CCFF66","#CCFF00","#CCFF33","#CCCC99","#CCCC66","#CCCC33","#999933",
         "#999900"];
 
-    $('#changecolors').click(function () {
-        if( $('body').css('background-color') == 'rgb(255, 255, 255)') {
-            $('body').css('background-color', '#292929');
-            $('#displaydiv').css('background-color', '#363535');
-        }
-        else{
-            $('body').css('background-color','white');
-            $('#displaydiv').css('background-color', '#e8e8e7');
-        }
+    $('#changecolors1').click(function () {
+        $('body').css('background-color', '#292929');
+        $('#displaydiv').css('background-color', '#363535');
     });
+
+    $('#changecolors2').click(function () {
+        $('body').css('background-color','white');
+        $('#displaydiv').css('background-color', '#e8e8e7');
+    });
+
     setInterval(function(){
         if($(window).width()>$('#displaydiv').width())
             $('#displaydiv').css('min-width',$(window).width()*0.96);
