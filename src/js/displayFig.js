@@ -23,11 +23,11 @@ $(document).ready(function(){
 
     $('#changecolors').click(function () {
         if( $('body').css('background-color') == 'rgb(255, 255, 255)') {
-            $('body').css('background-color', '#292929');
-            $('#displaydiv').css('background-color', '#363535');
-            $('#VA').css('color', '#ffffff');
-            $('#IE').css('color', '#ffffff');
-            $('#bar').css('color', '#ffffff');
+            $('body').css({"background-color":"#292929", "transition":"background-color 0.5s ease"});
+            $('#displaydiv').css({"background-color":"#363535", "transition":"background-color 0.5s ease"});
+            $('#VA').css({"color":"#ffffff", "transition":"color 0.5s ease"});
+            $('#IE').css({"color":"#ffffff", "transition":"color 0.5s ease"});
+            $('#bar').css({"color":"#ffffff", "transition":"color 0.5s ease"});
             $('#changecolors').html("Go to Light").button('refresh');
         }
         else{
