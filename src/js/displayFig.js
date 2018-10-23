@@ -20,20 +20,24 @@ $(document).ready(function(){
         "#669900","#CCFF66","#CCFF00","#CCFF33","#CCCC99","#CCCC66","#CCCC33","#999933",
         "#999900"];
 
-    $('#changecolors1').click(function () {
-        $('body').css('background-color', '#292929');
-        $('#displaydiv').css('background-color', '#363535');
-        $('#VA').css('color', '#ffffff');
-        $('#IE').css('color', '#ffffff');
-        $('#bar').css('color', '#ffffff');
-    });
 
-    $('#changecolors2').click(function () {
-        $('body').css('background-color','white');
-        $('#displaydiv').css('background-color', '#e8e8e7');
-        $('#VA').css('color', '#000000');
-        $('#IE').css('color', '#000000');
-        $('#bar').css('color', '#000000');
+    $('#changecolors').click(function () {
+        if( $('body').css('background-color') == 'rgb(255, 255, 255)') {
+            $('body').css('background-color', '#292929');
+            $('#displaydiv').css('background-color', '#363535');
+            $('#VA').css('color', '#ffffff');
+            $('#IE').css('color', '#ffffff');
+            $('#bar').css('color', '#ffffff');
+            $('#changecolors').html("Go to Light").button('refresh');
+        }
+        else{
+            $('body').css('background-color','white');
+            $('#displaydiv').css('background-color', '#e8e8e7');
+            $('#VA').css('color', '#000000');
+            $('#IE').css('color', '#000000');
+            $('#bar').css('color', '#000000');
+            $('#changecolors').html("Go to Dark").button('refresh');
+        }
     });
 
     setInterval(function(){
