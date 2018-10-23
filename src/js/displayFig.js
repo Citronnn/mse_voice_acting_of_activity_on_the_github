@@ -19,17 +19,29 @@ $(document).ready(function(){
         "#CCFF99","#99FF66","#66CC00","#66CC33","#669933","#336600","#99FF00","#99FF33","#99CC66","#99CC00","#99CC33",
         "#669900","#CCFF66","#CCFF00","#CCFF33","#CCCC99","#CCCC66","#CCCC33","#999933",
         "#999900"];
+    let isLight = true;
 
     $('#changecolors').click(function () {
-        if( $('body').css('background-color') == 'rgb(255, 255, 255)') {
-            $('body').css('background-color', '#292929');
-            $('#displaydiv').css('background-color', '#363535');
+        if(isLight) {
+            $('body').css('background-color','#292929');
+            $('#displaydiv').css('background-color','#363535');
+            $('#VA').css('color', '#ffffff');
+            $('#IE').css('color', '#ffffff');
+            $('#bar').css('color', '#ffffff');
+            $('#changecolors').html("Go to Light");
+            isLight = false;
         }
         else{
             $('body').css('background-color','white');
             $('#displaydiv').css('background-color', '#e8e8e7');
+            $('#VA').css('color', '#000000');
+            $('#IE').css('color', '#000000');
+            $('#bar').css('color', '#000000');
+            $('#changecolors').html("Go to Dark");
+            isLight = true;
         }
     });
+
     setInterval(function(){
         if($(window).width()>$('#displaydiv').width())
             $('#displaydiv').css('min-width',$(window).width()*0.96);

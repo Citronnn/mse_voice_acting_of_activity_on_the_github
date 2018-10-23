@@ -11,17 +11,36 @@
     <link rel='stylesheet' href='css/displayFig.css'>
 </head>
 <body onload="WebSocketInit()">
+
+    <div id="id01" class="w3-modal">
+        <div class="w3-modal-content">
+            <div class="w3-container">
+          <span onclick="document.getElementById('id01').style.display='none'"
+                class="w3-button w3-display-topright">&times;</span>
+                <p align="center">This is Visual GitHub Activity project, creatred by students of St.Petersburg's Electrotechnical University:</p>
+                <p align="center">Turov Vladimir</p>
+                <p align="center">Ivanov Vladimir</p>
+                <p align="center">Piskunov Yaroslav</p>
+                <p align="center">Zyl Sergey</p>
+                <p align="center">Matushina Marina</p>
+                <p align="center">For more information see the <a href="https://github.com/moevm/mse_voice_acting_of_activity_on_the_github">repository</a></p>
+            </div>
+        </div>
+    </div>
+
     <div align="center">
         <div class="w3-container">
             <div class="w3-display-container" style="height: 55px">
-                <div class="w3-display-middle">Visual activity on GitHub</div>
-                <button id ="changecolors" class="w3-display-topleft" style="margin-left: 40px">Change theme</button>
-                <div class="w3-display-topright top"><label><input type="range" min="0" max="100" step="1" value="50">Volume</label></div>
-                <div class="w3-display-bottomright top"><a href="frontend.html">About</a></div>
+                <div id="VA" class="w3-display-left" style="font-size: x-large; margin-left:1%">Visual activity on GitHub</div>
+                <button class="w3-display-right w3-btn w3-grey" id ="changecolors">Go to Dark</button>
+                <div id="bar" class="w3-display-middle" style="margin-left: 38%">Volume: <label><input type="range" min="0" max="100" step="1" value="50"></label></div>
+                <div class="w3-display-right" style="margin-right: 1%">
+                    <button class="w3-display-right w3-btn w3-green" onclick="document.getElementById('id01').style.display='block'">About</button>
+                </div>
             </div>
         </div>
         <div id="displaydiv"></div>
-        <p align="center">Info about events</p>
+        <p id="IE" align="center" style="font-size: x-large">Info about events</p>
         <div id="eventfield"></div>
     </div>
 </body>
