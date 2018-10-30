@@ -24,4 +24,4 @@ python3.6 backend.py
 sudo python3.6 backend.py
 ```
 
-статическую HTML страницу mse_voice_acting_of_activity_on_the_github/src/frontend.html необходимо открыть с помощью браузера
+статическую HTML страницу `mse_voice_acting_of_activity_on_the_github/src/frontend.html необходимо` открыть с помощью браузера
