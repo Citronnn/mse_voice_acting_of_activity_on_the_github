@@ -16,7 +16,7 @@ pip3 install bottle github3.py websocket-server
 
 Для запуска python backend необходимо запускать скрипт из папки src
 ```
-python3 backend.py
+python backend.py
 ```
 
 Для linux
