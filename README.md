@@ -16,12 +16,12 @@ pip install bottle github3.py websocket-server
 
 Для запуска python backend необходимо запускать скрипт из папки src
 ```
-python3.6 backend.py
+python3 backend.py
 ```
 
 Для linux
 ```
-sudo python3.6 backend.py
+python3.6 backend.py
 ```
 
 статическую HTML страницу `mse_voice_acting_of_activity_on_the_github/src/frontend.html` необходимо открыть с помощью браузера
