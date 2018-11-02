@@ -344,6 +344,8 @@
     return ReconnectingWebSocket;
 });
 
+//Field to store events
+var events = [];
 
 //Creation ReconnectingWebSocket
 function WebSocketInit() {
@@ -354,8 +356,9 @@ function WebSocketInit() {
     };
 
     ws.onmessage = function (evt) {
-            var received_msg = evt.data;
-            console.log(received_msg);
+        var received_msg = evt.data;
+        events.push(received_msg);
+       // console.log(events);
     };
 
     ws.onclose = function() {
