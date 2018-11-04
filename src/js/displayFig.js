@@ -68,9 +68,10 @@ $(document).ready(function(){
         createFig(type);
     },1400);
 
+    let next_m=Math.floor(Math.random() * (music.length));
     function createFig(type) {
         let rand_array = rands();
-        audio[rand_array[4]].play();
+        audio[(next_m++) % music.length].play();
         let br = 0;
         let rot = 0;
         if(type === 0){
@@ -109,7 +110,7 @@ $(document).ready(function(){
         rands_array.push(Math.floor(Math.random() * ($('#displaydiv').height() - 250)+100));
         rands_array.push(Math.floor(Math.random() * (150 - 40 + 1)+40));
         rands_array.push(Math.floor(Math.random() * (colors.length)));
-        rands_array.push(Math.floor(Math.random() * (music.length)));
+
         return rands_array;
     }
 });
