@@ -21,6 +21,12 @@ $(document).ready(function(){
         "#999900"];
     let isLight = true;
 
+    let music=["A1","A3","A4","A5","A6","B0","B4","B8","C0","C3","C4","D8",
+        "D9","E3","E7","F0","F6","F7","G4","G5","G7","G8"];
+    let audio = [];
+    for(let i=0;i<music.length;i++){
+        audio.push(new Audio("audio/"+music[i]+".mp3"));
+    }
     $('#changecolors').click(function () {
         if(isLight) {
             $('body').css('background-color','#292929');
@@ -64,6 +70,7 @@ $(document).ready(function(){
 
     function createFig(type) {
         let rand_array = rands();
+        audio[rand_array[4]].play();
         let br = 0;
         let rot = 0;
         if(type === 0){
@@ -77,7 +84,7 @@ $(document).ready(function(){
             transform: rotate(${rot}deg);"></div>
             <a href="#" id="a_figure"><div id ="main_figure" style="width:${rand_array[2]}px;
             height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
-            transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};">
+            transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};opacity: 0.9;">
             <p id ="text_figure" style="transform: rotate(${-rot}deg)">kek</p></div></a>`);
         $("#back_figure").animate({
             "width": "+=50px",
@@ -102,6 +109,7 @@ $(document).ready(function(){
         rands_array.push(Math.floor(Math.random() * ($('#displaydiv').height() - 250)+100));
         rands_array.push(Math.floor(Math.random() * (150 - 40 + 1)+40));
         rands_array.push(Math.floor(Math.random() * (colors.length)));
+        rands_array.push(Math.floor(Math.random() * (music.length)));
         return rands_array;
     }
 });
