@@ -2,6 +2,7 @@
 # Visual GitHub
 
 Инструкция по развертыванию python (необязательно, если уже имеется нужная версия и зависимости):
+* `sudo apt-get update`  
 * Установка python и pip:  
 ` sudo apt-get install python3.6 pip3`
 * Создание виртуального окружения:  
