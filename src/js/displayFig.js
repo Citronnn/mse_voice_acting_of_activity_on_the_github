@@ -21,6 +21,9 @@ let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66
     "#999900"];
 let isLight = true;
 
+let pushOnly = false;
+let pullOnly = false;
+
 let music=["A1","A3","A4","A5","A6","B0","B4","B8","C0","C3","C4","D8",
     "D9","E3","E7","F0","F6","F7","G4","G5","G7","G8"];
 let audio = [];
@@ -116,9 +119,49 @@ function getRepo(info) {
     return info.substring(info.indexOf('"repo": "')+9,info.indexOf('", "commits"'))
 }
 
+function filter_push() {
+    $("#eventfield").clear();
+    if(pushOnly)
+        pushOnly = false;
+    else
+    {
+        pullOnly = false;
+        pushOnly = true;
+    }
+}
+
+function filter_pull() {
+    $("#eventfield").clear();
+    if(pullOnly)
+        pullOnly = false;
+    else
+    {
+        pushOnly = false;
+        pullOnly = true;
+    }
+}
+
 function infoonFig(info){
     let type = Math.floor(Math.random() * (3));
     $("#back_figure").remove();
-    createFig(type, info);
+
+    let jsinfo = JSON.stringify(info);
+        createFig(type, info);
+    if (pushOnly)
+        if (jsinfo["type"] === 'PushEvent') {
+            $("#eventfield").append(jsinfo["id"]).append(" ").append(jsinfo["repo"]["url"]).append('\n');
+            createFig(type, info);
+        }
+    else if(pullOnly)
+        if (jsinfo["type"] === 'PushEvent')
+        {
+            $("#eventfield").append(jsinfo["id"]).append(" ").append(jsinfo["repo"]["url"]).append('\n');
+            createFig(type, info);
+        }
+    else
+    {
+        $("#eventfield").append(jsinfo["id"]).append(" ").append(jsinfo["repo"]["url"]).append('\n');
+        createFig(type, info);
+    }
 
 }
