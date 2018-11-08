@@ -141,6 +141,11 @@ function filter_pull() {
     }
 }
 
+function add_event(type, info, jsinfo) {
+    $("#eventfield").append(jsinfo["id"]).append(" ").append(jsinfo["type"]).append(" ").append(jsinfo["repo"]["url"]).append('\n');
+    createFig(type, info);
+}
+
 function infoonFig(info){
     let type = Math.floor(Math.random() * (3));
     $("#back_figure").remove();
@@ -148,20 +153,11 @@ function infoonFig(info){
     let jsinfo = JSON.stringify(info);
         createFig(type, info);
     if (pushOnly)
-        if (jsinfo["type"] === 'PushEvent') {
-            $("#eventfield").append(jsinfo["id"]).append(" ").append(jsinfo["repo"]["url"]).append('\n');
-            createFig(type, info);
-        }
+        if (jsinfo["type"] === 'PushEvent')
+            add_event(type, info, jsinfo);
     else if(pullOnly)
         if (jsinfo["type"] === 'PushEvent')
-        {
-            $("#eventfield").append(jsinfo["id"]).append(" ").append(jsinfo["repo"]["url"]).append('\n');
-            createFig(type, info);
-        }
+            add_event(type, info, jsinfo);
     else
-    {
-        $("#eventfield").append(jsinfo["id"]).append(" ").append(jsinfo["repo"]["url"]).append('\n');
-        createFig(type, info);
-    }
-
+        add_event(type, info, jsinfo);
 }
