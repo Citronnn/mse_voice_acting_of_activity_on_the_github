@@ -25,6 +25,10 @@
     transition: color 0.5s ease;
 }
 
+#eventfield{
+    overflow-y:scroll;
+    text-align: left;
+}
 body{
     background-color: white;
     transition: background-color 0.5s ease;

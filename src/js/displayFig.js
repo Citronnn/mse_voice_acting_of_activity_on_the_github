@@ -142,7 +142,7 @@ function filter_pull() {
 }
 
 function add_event(type, info, jsinfo) {
-    $("#eventfield").append(jsinfo["repo"]).append(" ").append(jsinfo["url"]).append('\n');
+    $("#eventfield").append(`<div>${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
     createFig(type, info);
 }
 
@@ -150,6 +150,6 @@ function infoonFig(info){
     let type = Math.floor(Math.random() * (3));
     $("#back_figure").remove();
 
-    let jsinfo = JSON.stringify(info);
+    let jsinfo = JSON.parse(info);
     add_event(type, info, jsinfo);
 }
