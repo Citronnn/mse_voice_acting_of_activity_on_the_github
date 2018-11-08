@@ -123,6 +123,7 @@ function getRepo(info) {
 
 function filter_push() {
     $("#eventfield").empty();
+    infoCount=0;
     if(pushOnly)
         pushOnly = false;
     else
@@ -134,6 +135,7 @@ function filter_push() {
 
 function filter_pull() {
     $("#eventfield").empty();
+    infoCount=0;
     if(pullOnly)
         pullOnly = false;
     else
@@ -144,7 +146,7 @@ function filter_pull() {
 }
 
 function add_event(type, info, jsinfo) {
-    $("#eventfield").append(`<div>${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
+    $("#eventfield").append(`<div id="one_event"><a href="${jsinfo["url"]}">${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
     createFig(type, info);
 }
 
@@ -158,8 +160,7 @@ function infoonFig(info) {
         infoCount++;
     } else
     {
-        infoCount = 0;
-        $("#eventfield").empty();
+        $("#one_event").remove();
         add_event(type, info, jsinfo);
     }
 }
