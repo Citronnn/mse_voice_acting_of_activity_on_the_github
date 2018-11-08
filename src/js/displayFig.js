@@ -24,6 +24,8 @@ let isLight = true;
 let pushOnly = false;
 let pullOnly = false;
 
+let infoCount = 0;
+
 let music=["A1","A3","A4","A5","A6","B0","B4","B8","C0","C3","C4","D8",
     "D9","E3","E7","F0","F6","F7","G4","G5","G7","G8"];
 let audio = [];
@@ -120,7 +122,7 @@ function getRepo(info) {
 }
 
 function filter_push() {
-    $("#eventfield").clear();
+    $("#eventfield").empty();
     if(pushOnly)
         pushOnly = false;
     else
@@ -131,7 +133,7 @@ function filter_push() {
 }
 
 function filter_pull() {
-    $("#eventfield").clear();
+    $("#eventfield").empty();
     if(pullOnly)
         pullOnly = false;
     else
@@ -146,10 +148,18 @@ function add_event(type, info, jsinfo) {
     createFig(type, info);
 }
 
-function infoonFig(info){
+function infoonFig(info) {
     let type = Math.floor(Math.random() * (3));
     $("#back_figure").remove();
-
     let jsinfo = JSON.parse(info);
-    add_event(type, info, jsinfo);
+
+    if (infoCount <= 50) {
+        add_event(type, info, jsinfo);
+        infoCount++;
+    } else
+    {
+        infoCount = 0;
+        $("#eventfield").empty();
+        add_event(type, info, jsinfo);
+    }
 }
