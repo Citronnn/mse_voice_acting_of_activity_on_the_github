@@ -84,10 +84,10 @@ function createFig(type,info) {
     $("#displaydiv").append(`<div id="back_figure" style="width:${rand_array[2] +50}px;
         height:${rand_array[2]+50}px;border-radius:${br+50}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
         transform: rotate(${rot}deg);margin-left: -25px;margin-top: -25px;"></div>
-        <a href="${getLink(info)}" id="a_figure"><div id ="main_figure" style="width:${rand_array[2]}px;
+        <a href="${info["url"]}" id="a_figure"><div id ="main_figure" style="width:${rand_array[2]}px;
         height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
         transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};opacity: 0.9;">
-        <p id ="text_figure" style="transform: rotate(${-rot}deg)">${getRepo(info)}</p></div></a>`);
+        <p id ="text_figure" style="transform: rotate(${-rot}deg)">${info["repo"]}</p></div></a>`);
     $(`#back_figure`).animate({
         "width": "+=50px",
         "margin-left":"-50px",
@@ -114,12 +114,6 @@ function rands(){
     rands_array.push((next_m++) % music.length);
     return rands_array;
 }
-function getLink(info){
-    return info.substring(info.indexOf('"url": "')+8,info.indexOf('", "hash"'))
-}
-function getRepo(info) {
-    return info.substring(info.indexOf('"repo": "')+9,info.indexOf('", "commits"'))
-}
 
 function filter_push() {
     $("#eventfield").empty();
@@ -145,9 +139,9 @@ function filter_pull() {
     }
 }
 
-function add_event(type, info, jsinfo) {
+function add_event(type, jsinfo) {
     $("#eventfield").append(`<div id="one_event"><a href="${jsinfo["url"]}">${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
-    createFig(type, info);
+    createFig(type, jsinfo);
 }
 
 function infoonFig(info) {
@@ -156,11 +150,11 @@ function infoonFig(info) {
     let jsinfo = JSON.parse(info);
 
     if (infoCount <= 50) {
-        add_event(type, info, jsinfo);
+        add_event(type, jsinfo);
         infoCount++;
     } else
     {
         $("#one_event").remove();
-        add_event(type, info, jsinfo);
+        add_event(type, jsinfo);
     }
 }
