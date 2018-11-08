@@ -142,7 +142,7 @@ function filter_pull() {
 }
 
 function add_event(type, info, jsinfo) {
-    $("#eventfield").append(jsinfo["id"]).append(" ").append(jsinfo["type"]).append(" ").append(jsinfo["repo"]["url"]).append('\n');
+    $("#eventfield").append(jsinfo["repo"]).append(" ").append(jsinfo["url"]).append('\n');
     createFig(type, info);
 }
 
@@ -151,13 +151,5 @@ function infoonFig(info){
     $("#back_figure").remove();
 
     let jsinfo = JSON.stringify(info);
-        createFig(type, info);
-    if (pushOnly)
-        if (jsinfo["type"] === 'PushEvent')
-            add_event(type, info, jsinfo);
-    else if(pullOnly)
-        if (jsinfo["type"] === 'PushEvent')
-            add_event(type, info, jsinfo);
-    else
-        add_event(type, info, jsinfo);
+    add_event(type, info, jsinfo);
 }
