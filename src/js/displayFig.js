@@ -41,6 +41,7 @@ $(document).ready(function () {
             $('#IE').css('color', '#ffffff');
             $('#bar').css('color', '#ffffff');
             $('#changecolors').html("Go to Light");
+            $('#changecolors').removeClass('w3-black').addClass('w3-white');
             isLight = false;
         }
         else{
@@ -50,6 +51,7 @@ $(document).ready(function () {
             $('#IE').css('color', '#000000');
             $('#bar').css('color', '#000000');
             $('#changecolors').html("Go to Dark");
+            $('#changecolors').removeClass('w3-white').addClass('w3-black');
             isLight = true;
         }
     });
