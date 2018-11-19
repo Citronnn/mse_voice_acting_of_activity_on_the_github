@@ -1,18 +1,13 @@
 from github3 import GitHub
 from github3.events import Event
-from github3.search import CommitSearchResult
 from github3.exceptions import NotFoundError
 from github3.exceptions import ServerError
 from github3.exceptions import ConnectionError
-from github3.git import ShortCommit
-from github3.repos.repo import Repository
-from github3.repos.commit import RepoCommit
-from pprint import pprint
 from threading import Thread, Lock
 from typing import List, Dict
 from time import sleep
 from datetime import datetime, timedelta
-from json import load, dump, loads, dumps
+from json import dumps
 from json.decoder import JSONDecodeError
 from websocket_server import WebsocketServer, WebSocketHandler
 
@@ -23,6 +18,18 @@ event_queue: List[Event] = []
 list_to_send: List[dict] = []
 lock: Lock = Lock()
 loop = 0
+
+
+def get_current_time(git_time) -> datetime:
+    now: datetime = datetime.now() - timedelta(hours=3, minutes=5)
+    time_to_send = datetime(now.year, now.month, now.day,
+                            git_time.hour, git_time.minute, git_time.second)
+    return time_to_send + timedelta(hours=3, minutes=5, seconds=30)
+
+
+def split_repo_name(full_repo_name):
+    repo_owner, repo_subname = full_repo_name.split('/', 1)
+    return repo_owner, repo_subname
 
 
 def download_events():
@@ -49,10 +56,12 @@ def download_events():
         except ConnectionAbortedError:
             print("Connection aborted error occurred")
 
-        print(f'{event_queue[-1].created_at.time()}-{event_queue[0].created_at.time()}, events: {len(event_queue)}, pushes: {sum(event.type == "PushEvent" for event in event_queue)}')
+        print(f'{event_queue[-1].created_at.time()}-'
+              f'{event_queue[0].created_at.time()}, '
+              f'events: {len(event_queue)}, '
+              f'pushes: {sum(event.type == "PushEvent" for event in event_queue)}')
 
         sleep(10)
-        #print(str(datetime.now())[:-7], loop)
 
 
 def handle_events():
@@ -60,92 +69,241 @@ def handle_events():
 
     print('Handle events started')
 
-    # logins_path = 'files/logins.json'
-    # repos_path = 'files/repos.json'
-
-    # logins = load(open(logins_path))
-    # repos = load(open(repos_path))
-    loop = 0
     while True:
         if len(event_queue) == 0:
             sleep(1)
             continue
 
-        loop += 1
-        if loop % 1000 == 0 and 0:
-            print()
-            sorted_logins = sorted([x for x in logins.items()], key=lambda x: -x[1])
-            for place, (login, value) in enumerate(sorted_logins[:10], 1):
-                repo_info = repos[login]
-                repo_max = max([x for x in repo_info.items()], key=lambda x: x[1])
-                print(place, login, value,
-                      f'| {repo_max[0]}'
-                      f'{"" if len(repo_info) == 1 else f": {repo_max[1]} ... {len(repo_info) - 1} more"}')
-            print("\nRequests remaining this hour:", git.ratelimit_remaining, '\n')
-            dump(logins, open(logins_path, 'w'), indent=4)
-            dump(repos, open(repos_path, 'w'), indent=4)
-
         event: Event = event_queue.pop()
 
-        if event.type == 'PushEvent' and event.payload['size'] > 0 and event.public:
-            try:
+        try:
+
+            if event.type == 'PushEvent':
+
+                if not (event.payload['size'] > 0 and event.public):
+                    continue
+
                 time_created = event.created_at.time()
                 repo_name = event.repo['name']
-                repo_id = event.repo['id']
                 repo_owner, repo_subname = repo_name.split('/', 1)
-                # print(repo_main)
-                # repository = git.repository_with_id(repo_id)
-                # total_commits = event.payload['size']
                 total_commits = len(event.payload['commits'])
                 commit_hash = event.payload['commits'][-1]['sha']
                 url = f'https://github.com/{repo_name}/commit/{commit_hash}'
 
-                now: datetime = datetime.now() - timedelta(hours=3, minutes=5)
-                time_to_send = datetime(now.year, now.month, now.day,
-                                        time_created.hour, time_created.minute, time_created.second)
+                with lock:
+                    list_to_send += [
+                        {
+                            'type': 'push',
+                            'time': get_current_time(time_created),
+                            'owner': repo_owner,
+                            'repo': repo_subname,
+                            'commits': total_commits,
+                            'url': url,
+                            'hash': commit_hash
+                        }
+                    ]
+
+            elif event.type == 'PullRequestEvent':
+
+                time_created = event.created_at.time()
+                event = event.as_dict()
+
+                url = event['payload']['pull_request']['html_url']
+                author = event['actor']['login']
+                title = event['payload']['pull_request']['title']
+                commits = event['payload']['pull_request']['commits']
+                changed_files = event['payload']['pull_request']['changed_files']
+
+                full_name_repo = event['repo']['name']
+                owner, repo = split_repo_name(full_name_repo)
 
                 with lock:
-                    time_to_send = time_to_send + timedelta(hours=3, minutes=5, seconds=30)
+                    list_to_send += [
+                        {
+                            'type': 'pull_request',
+                            'time': get_current_time(time_created),
+                            'owner': owner,
+                            'repo': repo,
+                            'commits': commits,
+                            'url': url,
+                            'author': author,
+                            'title': title,
+                            'changed_files': changed_files
+                        }
+                    ]
 
-                list_to_send += [
-                    {
-                        'time': time_to_send,
-                        'owner': repo_owner,
-                        'repo': repo_subname,
-                        'commits': total_commits,
-                        'url': url,
-                        'hash': commit_hash
-                    }
-                ]
+            elif event.type == 'CreateEvent':
 
-                # print(time_to_send, event.type, total_commits, event.repo['name'], url)
-                # if event.payload['size'] > 1:
-                #     print(event.payload['size'], event.payload['distinct_size'], len(event.payload['commits']))
+                time_created = event.created_at.time()
+                event = event.as_dict()
 
-                # repository: Repository = git.repository_with_id(repo_id)
-                # commit: RepoCommit = repository.commit(commit_hash)
-                # print(commit.last_modified)
-                # print(commit.additions)
-                # print(commit.deletions)
+                url = event['repo']['url']
 
-                continue
+                full_name_repo = event['repo']['name']
+                owner, repo = split_repo_name(full_name_repo)
 
-                # logins[repo_owner] = logins.get(repo_owner, 0) + total_commits
+                with lock:
+                    list_to_send += [
+                        {
+                            'type': 'create_repo',
+                            'time': get_current_time(time_created),
+                            'owner': owner,
+                            'repo': repo,
+                            'url': url
+                        }
+                    ]
 
-                # repos_info = repos.get(repo_owner, {})
-                # if repo_subname not in repos_info.keys():
-                #     repos_info[repo_subname] = 0
-                # repos_info[repo_subname] = repos_info.get(repo_subname, 0) + total_commits
-                # repos[repo_owner] = repos_info
+            elif event.type == 'ForkEvent':
 
-            except NotFoundError:
+                time_created = event.created_at.time()
+                event = event.as_dict()
+
+                url = event['payload']['forkee']['html_url']
+                owner, repo = split_repo_name(event['payload']['forkee']['full_name'])
+
+                with lock:
+                    list_to_send += [
+                        {
+                            'type': 'fork_repo',
+                            'time': get_current_time(time_created),
+                            'owner': owner,
+                            'repo': repo,
+                            'url': url
+                        }
+                    ]
+
+            elif event.type == 'WatchEvent':
                 pass
 
-            except JSONDecodeError:
+            elif event.type == 'IssuesEvent':
+
+                time_created = event.created_at.time()
+                event = event.as_dict()
+                url = event['payload']['issue']['html_url']
+                owner, repo = split_repo_name(event['repo']['name'])
+
+                with lock:
+                    list_to_send += [
+                        {
+                            'type': 'issue',
+                            'time': get_current_time(time_created),
+                            'owner': owner,
+                            'repo': repo,
+                            'url': url
+                        }
+                    ]
+
+            elif event.type == 'DeleteEvent':
                 pass
 
-        else:
-            # print(event.type)
+            elif event.type == 'IssueCommentEvent':
+
+                time_created = event.created_at.time()
+                event = event.as_dict()
+                owner, repo = split_repo_name(event['repo']['name'])
+                url = event['payload']['comment']['html_url']
+
+                with lock:
+                    list_to_send += [
+                        {
+                            'type': 'issue_comment',
+                            'time': get_current_time(time_created),
+                            'owner': owner,
+                            'repo': repo,
+                            'url': url
+                        }
+                    ]
+
+            elif event.type == 'PullRequestReviewCommentEvent':
+
+                time_created = event.created_at.time()
+                event = event.as_dict()
+                owner, repo = split_repo_name(event['repo']['name'])
+                url = event['payload']['comment']['html_url']
+
+                with lock:
+                    list_to_send += [
+                        {
+                            'type': 'pull_request_review',
+                            'time': get_current_time(time_created),
+                            'owner': owner,
+                            'repo': repo,
+                            'url': url
+                        }
+                    ]
+
+            elif event.type == 'GollumEvent':
+
+                time_created = event.created_at.time()
+                event = event.as_dict()
+                owner, repo = split_repo_name(event['repo']['name'])
+
+                if len(event['payload']['pages']) == 0:
+                    continue
+
+                url = event['payload']['pages'][-1]['html_url']
+
+                with lock:
+                    list_to_send += [
+                        {
+                            'type': 'wiki_page',
+                            'time': get_current_time(time_created),
+                            'owner': owner,
+                            'repo': repo,
+                            'url': url
+                        }
+                    ]
+
+            elif event.type == 'ReleaseEvent':
+
+                time_created = event.created_at.time()
+                event = event.as_dict()
+                owner, repo = split_repo_name(event['repo']['name'])
+                url = event['payload']['release']['html_url']
+
+                with lock:
+                    list_to_send += [
+                        {
+                            'type': 'release',
+                            'time': get_current_time(time_created),
+                            'owner': owner,
+                            'repo': repo,
+                            'url': url
+                        }
+                    ]
+
+            elif event.type == 'PublicEvent':
+                pass
+
+            elif event.type == 'CommitCommentEvent':
+
+                time_created = event.created_at.time()
+                event = event.as_dict()
+                owner, repo = split_repo_name(event['repo']['name'])
+                url = event['payload']['comment']['html_url']
+
+                with lock:
+                    list_to_send += [
+                        {
+                            'type': 'commit_comment',
+                            'time': get_current_time(time_created),
+                            'owner': owner,
+                            'repo': repo,
+                            'url': url
+                        }
+                    ]
+
+            elif event.type == 'MemberEvent':
+                pass
+
+            else:
+                print(event.type)
+                pass
+
+        except NotFoundError:
+            pass
+
+        except JSONDecodeError:
             pass
 
 
@@ -173,7 +331,7 @@ def send_events():
             list_to_send = [i for i in list_to_send if i['time'] >= now]
 
         for send_item in list_to_send_now:
-            print('send', send_item['time'])
+            # print('send', send_item['time'])
             del send_item['time']
             server.broadcast(send_item)
 
@@ -182,7 +340,7 @@ def send_events():
 
 class Debug:
     Debug = 1
-    Send = 1
+    Send = 0
     Connected = 1
     ClientLeft = 1
     Errors = 1
@@ -272,7 +430,7 @@ class VisualGithubClient(AbstractClient):
 
     def left(self, srv: 'Server') -> None:
         del srv.clients[self.id]
-        Debug.client_left('DEL VISUAL GITHUB', self.id)
+        # Debug.client_left('DEL VISUAL GITHUB', self.id)
 
 
 Thread(target=download_events, name="Download events").start()
