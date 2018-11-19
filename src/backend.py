@@ -333,7 +333,7 @@ def send_events():
             list_to_send = [i for i in list_to_send if i['time'] >= now]
 
         for send_item in list_to_send_now:
-            print('send', send_item['time'])
+            # print('send', send_item['time'])
             del send_item['time']
             server.broadcast(send_item)
 
