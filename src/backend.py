@@ -11,13 +11,10 @@ from json import dumps
 from json.decoder import JSONDecodeError
 from websocket_server import WebsocketServer, WebSocketHandler
 
-git = GitHub(token="78424da6d275052ec0cd159497b68ff34c06b1f2")
-print("Requests remaining this hour:", git.ratelimit_remaining, '\n')
 
 event_queue: List[Event] = []
 list_to_send: List[dict] = []
 lock: Lock = Lock()
-loop = 0
 
 
 def get_current_time(git_time) -> datetime:
@@ -33,16 +30,18 @@ def split_repo_name(full_repo_name):
 
 
 def download_events():
-    global event_queue, loop
+    global event_queue
 
     print('Download events started')
+
+    git = GitHub(token="78424da6d275052ec0cd159497b68ff34c06b1f2")
+    print("Requests remaining this hour:", git.ratelimit_remaining, '\n')
 
     last_event = None
     while True:
         try:
             new_events: List[Event] = []
             for event in git.all_events():
-                event: Event
                 if last_event is None or event.id != last_event.id:
                     new_events += [event]
                 else:
@@ -56,16 +55,17 @@ def download_events():
         except ConnectionAbortedError:
             print("Connection aborted error occurred")
 
+        pushes = sum(event.type == "PushEvent" for event in event_queue)
         print(f'{event_queue[-1].created_at.time()}-'
               f'{event_queue[0].created_at.time()}, '
               f'events: {len(event_queue)}, '
-              f'pushes: {sum(event.type == "PushEvent" for event in event_queue)}')
+              f'pushes: {pushes}')
 
         sleep(10)
 
 
 def handle_events():
-    global event_queue, loop, list_to_send, lock
+    global event_queue, list_to_send, lock
 
     print('Handle events started')
 
@@ -112,7 +112,7 @@ def handle_events():
                 author = event['actor']['login']
                 title = event['payload']['pull_request']['title']
                 commits = event['payload']['pull_request']['commits']
-                changed_files = event['payload']['pull_request']['changed_files']
+                changed = event['payload']['pull_request']['changed_files']
 
                 full_name_repo = event['repo']['name']
                 owner, repo = split_repo_name(full_name_repo)
@@ -128,7 +128,7 @@ def handle_events():
                             'url': url,
                             'author': author,
                             'title': title,
-                            'changed_files': changed_files
+                            'changed_files': changed
                         }
                     ]
 
@@ -159,7 +159,8 @@ def handle_events():
                 event = event.as_dict()
 
                 url = event['payload']['forkee']['html_url']
-                owner, repo = split_repo_name(event['payload']['forkee']['full_name'])
+                full_name_repo = event['payload']['forkee']['full_name']
+                owner, repo = split_repo_name(full_name_repo)
 
                 with lock:
                     list_to_send += [
@@ -322,7 +323,8 @@ def send_events():
 
                 divider = len(same_time_list)
                 for i, same_item in enumerate(same_time_list):
-                    same_item['time'] += timedelta(milliseconds=i / divider * 1000)
+                    increase = timedelta(milliseconds=i / divider * 1000)
+                    same_item['time'] += increase
 
         now = datetime.now()
 
@@ -331,7 +333,7 @@ def send_events():
             list_to_send = [i for i in list_to_send if i['time'] >= now]
 
         for send_item in list_to_send_now:
-            # print('send', send_item['time'])
+            print('send', send_item['time'])
             del send_item['time']
             server.broadcast(send_item)
 
@@ -382,21 +384,19 @@ class Debug:
             pass
 
 
-class AbstractClient:
+class VisualGithubClient:
 
-    class ID:
-        VisualGithub = 'vg'
-
-    def __init__(self, _id: int, name: str, handler: WebSocketHandler):
-        self.id: int = _id  # Это внутренний ID клиента, присваиваемый сервером
-        self.name = name
+    def __init__(self, _id: int, handler: WebSocketHandler):
+        # Это внутренний ID клиента, присваиваемый сервером
+        self.id: int = _id
         self.handler: WebSocketHandler = handler
 
     def finish(self):
         try:
             self.handler.finish()
         except KeyError:
-            Debug.error(f'Key error possibly double deleting id = {self.id}')
+            Debug.error(f'Key error possibly double '
+                        f'deleting id = {self.id}')
 
     def send_raw(self, message: str) -> None:
         try:
@@ -413,29 +413,12 @@ class AbstractClient:
         except BrokenPipeError:
             Debug.error(f'Broken pipe error send id = {self.id}')
 
-    def receive(self, srv: 'Server', message: str, client: dict) -> None:
-        raise NotImplementedError('Method "receive" is not implemented in derived class')
-
-    def left(self, srv: 'Server') -> None:
-        raise NotImplementedError('Method "left" is not implemented in derived class')
-
-
-class VisualGithubClient(AbstractClient):
-
-    def __init__(self, _id: int, handler: WebSocketHandler):
-        super().__init__(_id, AbstractClient.ID.VisualGithub, handler)
-
     def receive(self, srv: 'Server', message: str, client: dict):
         pass
 
     def left(self, srv: 'Server') -> None:
         del srv.clients[self.id]
         # Debug.client_left('DEL VISUAL GITHUB', self.id)
-
-
-Thread(target=download_events, name="Download events").start()
-Thread(target=handle_events, name="Handle events").start()
-Thread(target=send_events, name="Send events").start()
 
 
 class Server:
@@ -457,14 +440,15 @@ class Server:
         self.server.set_fn_client_left(self.client_left)
         self.server.set_fn_message_received(self.message_received)
 
-        self.clients: Dict[int, AbstractClient] = {}
+        self.clients: Dict[int, VisualGithubClient] = {}
 
     def run(self):
         self.server.run_forever()
 
     # Called for every client connecting (after handshake)
     def new_client(self, client, _):
-        Debug.connected(f'New client connected and was given id {client["id"]}')
+        Debug.connected(f'New client connected '
+                        f'and was given id {client["id"]}')
         new_client = VisualGithubClient(client['id'], client['handler'])
         client['client'] = new_client
         self.clients[new_client.id] = new_client
@@ -479,9 +463,11 @@ class Server:
         try:
             client['client'].left(self)
         except KeyError:
-            Debug.error(f'Key error possibly double deleting in client left id = {client["id"]}')
+            Debug.error(f'Key error possibly double deleting '
+                        f'in client left id = {client["id"]}')
         except ValueError:
-            Debug.error(f'Value error possibly double deleting in client left id = {client["id"]}')
+            Debug.error(f'Value error possibly double deleting '
+                        f'in client left id = {client["id"]}')
 
     # Called when a client sends a message
     def message_received(self, client, _, message):
@@ -497,5 +483,6 @@ class Server:
 
 server = Server()
 Thread(target=lambda: server.run(), name='WebSocket server').start()
-
-print("\nRequests (after) remaining this hour:", git.ratelimit_remaining)
+Thread(target=download_events, name="Download events").start()
+Thread(target=handle_events, name="Handle events").start()
+Thread(target=send_events, name="Send events").start()
