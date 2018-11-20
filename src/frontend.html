@@ -41,9 +41,21 @@
         </div>
         <div id="displaydiv"></div>
         <p id="IE" align="center" style="font-size: x-large">Info about events</p>
-        <button class="w3-btn w3-green w3-margin-bottom" id="pushOnly" onclick="filter_push()">Switch Pushes only</button>
-        <button class="w3-btn w3-green w3-margin-bottom" id="pullOnly" onclick="filter_pull()">Swith Pull requests only</button>
+        <input type="checkbox" class="filterMain" value="all" onclick="use_all_filters_flags();">All
+        <input type="checkbox" class="filtercheck" value="pull_request" onclick="filterChange();">PullReq
+        <input type="checkbox" class="filtercheck" value="push" onclick="filterChange();">Push
+        <input type="checkbox" class="filtercheck" value="create_repo" onclick="filterChange();">CreateRepo
+        <input type="checkbox" class="filtercheck" value="fork_repo"  onclick="filterChange();">forkRepo
+        <input type="checkbox" class="filtercheck" value="issue" onclick="filterChange();">Issue
+        <input type="checkbox" class="filtercheck" value="issue_comment" onclick="filterChange();">IssueComment
+        <input type="checkbox" class="filtercheck" value="pull_request_review" onclick="filterChange();">PullReqReview
+        <input type="checkbox" class="filtercheck" value="wiki_page" onclick="filterChange();">WikiPage
+        <input type="checkbox" class="filtercheck" value="release" onclick="filterChange();">Release
+        <input type="checkbox" class="filtercheck" value="commit_comment" onclick="filterChange();">ComCom
+       <!-- <button class="w3-btn w3-green w3-margin-bottom" id="pushOnly" onclick="filter_push()">Switch Pushes only</button>
+        <button class="w3-btn w3-green w3-margin-bottom" id="pullOnly" onclick="filter_pull()">Swith Pull requests only</button>  -->
         <div id="eventfield"></div>
+
     </div>
 </body>
 </html>
