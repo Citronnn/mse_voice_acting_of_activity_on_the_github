@@ -1,4 +1,4 @@
-
+const time_of_life = 20;
 let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66","#FFCC00","#FFCC33",
     "#CC9933","#996600","#FF9900","#FF9933","#CC9966","#CC6600","#FFCC99","#FF9966","#FF6600",
     "#CC6633","#993300","#FF6633","#CC3300","#FF3300","#FF0000","#CC0000","#990000","#FFCCCC","#FF9999",
@@ -27,7 +27,8 @@ let pullOnly = false;
 let infoCount = 0;
 
 let audio = [];
-for(let i=1;i<49;i++){
+const audio_size=48;
+for(let i=1;i<audio_size+1;i++){
     audio.push(new Audio("audio/"+i+".mp3"));
 }
 $(document).ready(function () {
@@ -62,14 +63,20 @@ setInterval(function(){
     if($(window).height()>$('#displaydiv').height())
         $('#displaydiv').css('min-height',$(window).height()-55+'px');
 },0);
+let id=0;
 
 function createFig(type,info) {
     let rand_array = rands();
-    console.log(rand_array[4]);
     audio[rand_array[4]].volume = $('#volinp').val()/100;
     audio[rand_array[4]].play();
+    let idl=id++;
+    if(id === 1000)
+        id=0;
     let br = 0;
     let rot = 0;
+    let back_fig_anim_time = 2000;
+    if(time_of_life < 50)
+        back_fig_anim_time=40*time_of_life;
     if(type === 0){
         br = rand_array[2]/2;
     }
@@ -79,7 +86,7 @@ function createFig(type,info) {
     $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: 1;width:${rand_array[2]}px;
         height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
         transform: rotate(${rot}deg);"></div>
-        <a href="${info["url"]}" id="a_figure"  style="z-index: 2;width:${rand_array[2]}px;
+        <a href="${info["url"]}" id="${idl}" class="a_figure"  style="z-index: 2;width:${rand_array[2]}px;
         height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
         transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};opacity: 0.9;">
         <p id ="text_figure" style="transform: rotate(${-rot}deg)">${info["repo"]}</p></a>`);
@@ -90,9 +97,18 @@ function createFig(type,info) {
         "border-radius":"+50px",
         "height":"+=50px",
         "opacity":"0"
-    },2000);
+    },back_fig_anim_time);
     setTimeout(()=>{$("#displaydiv  div:last").remove();},2000);
-    setTimeout(()=>{$(`#displaydiv  a:last`).remove()},4000);
+    setTimeout(function(){
+        if(time_of_life >= 200) {
+            $(`#${idl}`).animate({"opacity": "0"}, 1000);
+            setTimeout(() => {
+                $(`#${idl}`).remove()
+            }, 1000);
+        }
+        else
+            $(`#${idl}`).remove();
+    },40*time_of_life);
 
 }
 
@@ -103,7 +119,7 @@ function rands(){
     rands_array.push(Math.floor(Math.random() * ($('#displaydiv').height() - 250)+100));
     rands_array.push(Math.floor(Math.random() * (150 - 40 + 1)+40));
     rands_array.push(Math.floor(Math.random() * (colors.length)));
-    rands_array.push(Math.floor(Math.random() * 48));
+    rands_array.push(Math.floor(Math.random() * audio_size));
     return rands_array;
 }
 
@@ -130,6 +146,7 @@ function filter_pull() {
         pullOnly = true;
     }
 }
+
 
 
 function add_event(type, jsinfo) {
