@@ -26,11 +26,9 @@ let pullOnly = false;
 
 let infoCount = 0;
 
-let music=["A1","A3","A4","A5","A6","B0","B4","B8","C0","C3","C4","D8",
-    "D9","E3","E7","F0","F6","F7","G4","G5","G7","G8"];
 let audio = [];
-for(let i=0;i<music.length;i++){
-    audio.push(new Audio("audio/"+music[i]+".mp3"));
+for(let i=1;i<49;i++){
+    audio.push(new Audio("audio/"+i+".mp3"));
 }
 $(document).ready(function () {
     $('#changecolors').click(function () {
@@ -65,11 +63,9 @@ setInterval(function(){
         $('#displaydiv').css('min-height',$(window).height()-55+'px');
 },0);
 
-
-let next_m=Math.floor(Math.random() * (music.length));
-
 function createFig(type,info) {
     let rand_array = rands();
+    console.log(rand_array[4]);
     audio[rand_array[4]].volume = $('#volinp').val()/100;
     audio[rand_array[4]].play();
     let br = 0;
@@ -99,12 +95,7 @@ function createFig(type,info) {
     setTimeout(()=>{$(`#displaydiv  a:last`).remove()},4000);
 
 }
-function life_of_fig() {
-    setTimeout(delFig,8000);
-}
-function delFig() {
-    $("#a_figure").remove();
-}
+
 
 function rands(){
     let rands_array=[];
@@ -112,7 +103,7 @@ function rands(){
     rands_array.push(Math.floor(Math.random() * ($('#displaydiv').height() - 250)+100));
     rands_array.push(Math.floor(Math.random() * (150 - 40 + 1)+40));
     rands_array.push(Math.floor(Math.random() * (colors.length)));
-    rands_array.push((next_m++) % music.length);
+    rands_array.push(Math.floor(Math.random() * 48));
     return rands_array;
 }
 
