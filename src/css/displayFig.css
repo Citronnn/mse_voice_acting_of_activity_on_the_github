@@ -1,4 +1,4 @@
-#main_figure{
+#a_figure{
     border:1px solid;
     background-color: aqua;
     position:absolute;
@@ -16,6 +16,10 @@
 }
 
 #back_figure{
-    background-color: beige;
+    background-color: #87918F;
     position:absolute;
+    display: flex;
+    justify-content: center; /*Центрирование по горизонтали*/
+    align-items: center;
+    text-align: center;
 }
