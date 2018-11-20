@@ -1,4 +1,4 @@
-
+const time_of_life = 20;
 let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66","#FFCC00","#FFCC33",
     "#CC9933","#996600","#FF9900","#FF9933","#CC9966","#CC6600","#FFCC99","#FF9966","#FF6600",
     "#CC6633","#993300","#FF6633","#CC3300","#FF3300","#FF0000","#CC0000","#990000","#FFCCCC","#FF9999",
@@ -26,11 +26,10 @@ let pullOnly = false;
 
 let infoCount = 0;
 
-let music=["A1","A3","A4","A5","A6","B0","B4","B8","C0","C3","C4","D8",
-    "D9","E3","E7","F0","F6","F7","G4","G5","G7","G8"];
 let audio = [];
-for(let i=0;i<music.length;i++){
-    audio.push(new Audio("audio/"+music[i]+".mp3"));
+const audio_size=48;
+for(let i=1;i<audio_size+1;i++){
+    audio.push(new Audio("audio/"+i+".mp3"));
 }
 $(document).ready(function () {
     $('#changecolors').click(function () {
@@ -41,12 +40,14 @@ $(document).ready(function () {
             $('#IE').css('color', '#ffffff');
             $('#bar').css('color', '#ffffff');
             $('#changecolors').html("Go to Light");
+            $('#back_figure').css('background-color','#87918F');
             $('#changecolors').removeClass('w3-black').addClass('w3-white');
             isLight = false;
         }
         else{
             $('body').css('background-color','white');
             $('#displaydiv').css('background-color', '#e8e8e7');
+            $('#back_figure').css('background-color','#F5F5DC');
             $('#VA').css('color', '#000000');
             $('#IE').css('color', '#000000');
             $('#bar').css('color', '#000000');
@@ -62,50 +63,55 @@ setInterval(function(){
     if($(window).height()>$('#displaydiv').height())
         $('#displaydiv').css('min-height',$(window).height()-55+'px');
 },0);
-
-setInterval(function(){
-    $("#a_figure").animate({
-        "opacity":"0"
-    },1500);
-});
-
-let next_m=Math.floor(Math.random() * (music.length));
+let id=0;
 
 function createFig(type,info) {
     let rand_array = rands();
     audio[rand_array[4]].volume = $('#volinp').val()/100;
     audio[rand_array[4]].play();
+    let idl=id++;
+    if(id === 1000)
+        id=0;
     let br = 0;
     let rot = 0;
+    let back_fig_anim_time = 2000;
+    if(time_of_life < 50)
+        back_fig_anim_time=40*time_of_life;
     if(type === 0){
         br = rand_array[2]/2;
     }
     else if(type === 1){
         rot = 45;
     }
-    $("#displaydiv").append(`<div id="back_figure" style="width:${rand_array[2] +50}px;
-        height:${rand_array[2]+50}px;border-radius:${br+50}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
-        transform: rotate(${rot}deg);margin-left: -25px;margin-top: -25px;"></div>
-        <a href="${info["url"]}" id="a_figure"><div id ="main_figure" style="width:${rand_array[2]}px;
+    $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: 1;width:${rand_array[2]}px;
+        height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
+        transform: rotate(${rot}deg);"></div>
+        <a href="${info["url"]}" id="${idl}" class="a_figure"  style="z-index: 2;width:${rand_array[2]}px;
         height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
         transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};opacity: 0.9;">
-        <p id ="text_figure" style="transform: rotate(${-rot}deg)">${info["repo"]}</p></div></a>`);
+        <p id ="text_figure" style="transform: rotate(${-rot}deg)">${info["repo"]}</p></a>`);
     $(`#back_figure`).animate({
         "width": "+=50px",
-        "margin-left":"-50px",
-        "margin-top":"-50px",
+        "margin-left":"-25px",
+        "margin-top":"-25px",
         "border-radius":"+50px",
         "height":"+=50px",
         "opacity":"0"
-    },1000);
-    life_of_fig();
+    },back_fig_anim_time);
+    setTimeout(()=>{$("#displaydiv  div:last").remove();},2000);
+    setTimeout(function(){
+        if(time_of_life >= 200) {
+            $(`#${idl}`).animate({"opacity": "0"}, 1000);
+            setTimeout(() => {
+                $(`#${idl}`).remove()
+            }, 1000);
+        }
+        else
+            $(`#${idl}`).remove();
+    },40*time_of_life);
+
 }
-function life_of_fig() {
-    setTimeout(delFig,8000);
-}
-function delFig() {
-    $("#a_figure").remove();
-}
+
 
 function rands(){
     let rands_array=[];
@@ -113,7 +119,7 @@ function rands(){
     rands_array.push(Math.floor(Math.random() * ($('#displaydiv').height() - 250)+100));
     rands_array.push(Math.floor(Math.random() * (150 - 40 + 1)+40));
     rands_array.push(Math.floor(Math.random() * (colors.length)));
-    rands_array.push((next_m++) % music.length);
+    rands_array.push(Math.floor(Math.random() * audio_size));
     return rands_array;
 }
 
@@ -141,6 +147,8 @@ function filter_pull() {
     }
 }
 
+
+
 function add_event(type, jsinfo) {
     $("#eventfield").append(`<div id="one_event"><a href="${jsinfo["url"]}">${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
     createFig(type, jsinfo);
@@ -148,7 +156,7 @@ function add_event(type, jsinfo) {
 
 function infoonFig(info) {
     let type = Math.floor(Math.random() * (3));
-    $("#back_figure").remove();
+   // $("#back_figure").remove();
     let jsinfo = JSON.parse(info);
 
     if (infoCount <= 50) {
