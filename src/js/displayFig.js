@@ -171,7 +171,7 @@ function use_all_filters_flags() {
     filterChange();
 }
 function add_event(type, jsinfo) {
-    $("#eventfield").append(`<div id="one_event"><a href="${jsinfo["url"]}">${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
+    $("#eventfield").append(`<div id="one_event"><a href="${jsinfo["url"]}" target="_blank">${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
     $("#eventfield").scrollTop($("#eventfield")[0].scrollHeight);
     createFig(type, jsinfo);
 }
