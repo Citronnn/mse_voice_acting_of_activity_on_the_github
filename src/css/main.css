@@ -37,13 +37,14 @@
 .checkboxes {
     font-size: large;
     color: #ffffff;
-    background: red;
+    background: #a0a0a0;
     border-radius: 5px;
     margin-left: 3px;
     padding: 4px;
 }
+
 input[type=checkbox]:checked + label {
-    background: green;;
+    background: green;
 }
 
 body{
