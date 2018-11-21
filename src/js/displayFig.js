@@ -42,6 +42,7 @@ $(document).ready(function () {
             $('#changecolors').html("Go to Light");
             $('#back_figure').css('background-color','#87918F');
             $('#changecolors').removeClass('w3-black').addClass('w3-white');
+            $('#eventfield').css('color', '#ffffff');
             isLight = false;
         }
         else{
@@ -53,6 +54,7 @@ $(document).ready(function () {
             $('#bar').css('color', '#000000');
             $('#changecolors').html("Go to Dark");
             $('#changecolors').removeClass('w3-white').addClass('w3-black');
+            $('#eventfield').css('color', '#000000');
             isLight = true;
         }
     });
