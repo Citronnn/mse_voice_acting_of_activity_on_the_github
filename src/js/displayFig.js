@@ -152,9 +152,6 @@ function filter_pull() {
 function add_event(type, jsinfo) {
     $("#eventfield").append(`<div id="one_event"><a href="${jsinfo["url"]}" target="_blank">${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
     createFig(type, jsinfo);
-
-    var eventBlock = document.getElementById("eventfield");
-    eventBlock.scrollTop = eventBlock.scrollHeight;
 }
 
 function infoonFig(info) {
