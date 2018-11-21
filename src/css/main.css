@@ -30,12 +30,17 @@
     text-align: left;
 }
 
+.filtercheck{
+    margin-left: 8px;
+}
+
 .checkboxes {
     font-size: large;
     color: #ffffff;
     background: red;
     border-radius: 5px;
     margin-left: 3px;
+    padding: 4px;
 }
 input[type=checkbox]:checked + label {
     background: green;;
