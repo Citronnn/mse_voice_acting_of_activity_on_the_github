@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from json import dumps
 from json.decoder import JSONDecodeError
 from websocket_server import WebsocketServer, WebSocketHandler
+from pprint import pprint
 
 
 event_queue: List[Event] = []
@@ -137,7 +138,7 @@ def handle_events():
                 time_created = event.created_at.time()
                 event = event.as_dict()
 
-                url = event['repo']['url']
+                url = f'https://github.com/{event["repo"]["name"]}'
 
                 full_name_repo = event['repo']['name']
                 owner, repo = split_repo_name(full_name_repo)
@@ -298,7 +299,7 @@ def handle_events():
                 pass
 
             else:
-                print(event.type)
+                pprint(event.as_dict())
                 pass
 
         except NotFoundError:
