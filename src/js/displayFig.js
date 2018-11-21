@@ -171,6 +171,7 @@ function use_all_filters_flags() {
 }
 function add_event(type, jsinfo) {
     $("#eventfield").append(`<div id="one_event"><a href="${jsinfo["url"]}">${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
+    $("#eventfield").scrollTop($("#eventfield")[0].scrollHeight);
     createFig(type, jsinfo);
 }
 
