@@ -32,6 +32,7 @@ for(let i=1;i<audio_size+1;i++){
     audio.push(new Audio("audio/"+i+".mp3"));
 }
 $(document).ready(function () {
+    filterChange();
     $('#changecolors').click(function () {
         if(isLight) {
             $('body').css('background-color','#292929');
