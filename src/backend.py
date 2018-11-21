@@ -477,7 +477,7 @@ class Server:
         client['client'].receive(self, message, client)
 
     def broadcast(self, message: dict):
-        for client in self.clients.values():
+        for client in list(self.clients.values()):
             client.send(message)
 
 
