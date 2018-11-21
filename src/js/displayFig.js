@@ -32,6 +32,7 @@ for(let i=1;i<audio_size+1;i++){
     audio.push(new Audio("audio/"+i+".mp3"));
 }
 $(document).ready(function () {
+    filterChange();
     $('#changecolors').click(function () {
         if(isLight) {
             $('body').css('background-color','#292929');
@@ -42,6 +43,7 @@ $(document).ready(function () {
             $('#changecolors').html("Go to Light");
             $('#back_figure').css('background-color','#87918F');
             $('#changecolors').removeClass('w3-black').addClass('w3-white');
+            $('#eventfield').css('color', '#ffffff');
             isLight = false;
         }
         else{
@@ -53,6 +55,7 @@ $(document).ready(function () {
             $('#bar').css('color', '#000000');
             $('#changecolors').html("Go to Dark");
             $('#changecolors').removeClass('w3-white').addClass('w3-black');
+            $('#eventfield').css('color', '#000000');
             isLight = true;
         }
     });
@@ -169,6 +172,7 @@ function use_all_filters_flags() {
 }
 function add_event(type, jsinfo) {
     $("#eventfield").append(`<div id="one_event"><a href="${jsinfo["url"]}">${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
+    $("#eventfield").scrollTop($("#eventfield")[0].scrollHeight);
     createFig(type, jsinfo);
 }
 
