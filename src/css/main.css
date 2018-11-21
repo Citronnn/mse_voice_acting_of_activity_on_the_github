@@ -29,6 +29,23 @@
     overflow-y:scroll;
     text-align: left;
 }
+
+.filtercheck{
+    margin-left: 8px;
+}
+
+.checkboxes {
+    font-size: large;
+    color: #ffffff;
+    background: red;
+    border-radius: 5px;
+    margin-left: 3px;
+    padding: 4px;
+}
+input[type=checkbox]:checked + label {
+    background: green;;
+}
+
 body{
     background-color: white;
     transition: background-color 0.5s ease;

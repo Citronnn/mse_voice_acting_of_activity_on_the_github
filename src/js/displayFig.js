@@ -147,8 +147,26 @@ function filter_pull() {
     }
 }
 
+let filter_flags = [];
+function filterChange(){
+    filter_flags=[];
+    let tmp_mass =  $("input:checkbox:checked");
+    for ( let key in tmp_mass){
+        filter_flags.push(tmp_mass[key].value)
+    }
+    if(tmp_mass.length===10 && $('.filterMain')[0].checked === false )
+        $('.filterMain').prop('checked', true);
+    else if (tmp_mass.length!==11)
+        $('.filterMain').prop('checked', false);
+}
 
-
+function use_all_filters_flags() {
+    if($('.filterMain')[0].checked === true)
+        $('.filtercheck').prop('checked', true);
+    else
+        $('.filtercheck').prop('checked', false);
+    filterChange();
+}
 function add_event(type, jsinfo) {
     $("#eventfield").append(`<div id="one_event"><a href="${jsinfo["url"]}">${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
     createFig(type, jsinfo);
@@ -158,13 +176,15 @@ function infoonFig(info) {
     let type = Math.floor(Math.random() * (3));
    // $("#back_figure").remove();
     let jsinfo = JSON.parse(info);
-
-    if (infoCount <= 50) {
-        add_event(type, jsinfo);
-        infoCount++;
-    } else
-    {
-        $("#one_event").remove();
-        add_event(type, jsinfo);
+    if(filter_flags.indexOf(`${jsinfo['type']}`) > -1) {
+        if (infoCount <= 50) {
+            add_event(type, jsinfo);
+            infoCount++;
+        } else {
+            $("#one_event").remove();
+            add_event(type, jsinfo);
+        }
     }
 }
+
+
