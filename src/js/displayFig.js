@@ -89,7 +89,7 @@ function createFig(type,info) {
     $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: 1;width:${rand_array[2]}px;
         height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
         transform: rotate(${rot}deg);"></div>
-        <a href="${info["url"]}" id="${idl}" class="a_figure"  style="z-index: 2;width:${rand_array[2]}px;
+        <a href="${info["url"]}" target="_blank" id="${idl}" class="a_figure"  style="z-index: 2;width:${rand_array[2]}px;
         height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
         transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};opacity: 0.9;">
         <p id ="text_figure" style="transform: rotate(${-rot}deg)">${info["repo"]}</p></a>`);
