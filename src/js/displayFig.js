@@ -32,6 +32,7 @@ for(let i=1;i<audio_size+1;i++){
     audio.push(new Audio("audio/"+i+".mp3"));
 }
 $(document).ready(function () {
+    filterChange();
     $('#changecolors').click(function () {
         if(isLight) {
             $('body').css('background-color','#292929');
@@ -42,6 +43,7 @@ $(document).ready(function () {
             $('#changecolors').html("Go to Light");
             $('#back_figure').css('background-color','#87918F');
             $('#changecolors').removeClass('w3-black').addClass('w3-white');
+            $('#eventfield').css('color', '#ffffff');
             isLight = false;
         }
         else{
@@ -53,6 +55,7 @@ $(document).ready(function () {
             $('#bar').css('color', '#000000');
             $('#changecolors').html("Go to Dark");
             $('#changecolors').removeClass('w3-white').addClass('w3-black');
+            $('#eventfield').css('color', '#000000');
             isLight = true;
         }
     });
@@ -147,10 +150,29 @@ function filter_pull() {
     }
 }
 
+let filter_flags = [];
+function filterChange(){
+    filter_flags=[];
+    let tmp_mass =  $("input:checkbox:checked");
+    for ( let key in tmp_mass){
+        filter_flags.push(tmp_mass[key].value)
+    }
+    if(tmp_mass.length===10 && $('.filterMain')[0].checked === false )
+        $('.filterMain').prop('checked', true);
+    else if (tmp_mass.length!==11)
+        $('.filterMain').prop('checked', false);
+}
 
-
+function use_all_filters_flags() {
+    if($('.filterMain')[0].checked === true)
+        $('.filtercheck').prop('checked', true);
+    else
+        $('.filtercheck').prop('checked', false);
+    filterChange();
+}
 function add_event(type, jsinfo) {
-    $("#eventfield").append(`<div id="one_event"><a href="${jsinfo["url"]}" target="_blank">${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
+    $("#eventfield").append(`<div id="one_event"><a href="${jsinfo["url"]}">${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
+    $("#eventfield").scrollTop($("#eventfield")[0].scrollHeight);
     createFig(type, jsinfo);
 }
 
@@ -158,13 +180,15 @@ function infoonFig(info) {
     let type = Math.floor(Math.random() * (3));
    // $("#back_figure").remove();
     let jsinfo = JSON.parse(info);
-
-    if (infoCount <= 50) {
-        add_event(type, jsinfo);
-        infoCount++;
-    } else
-    {
-        $("#one_event").remove();
-        add_event(type, jsinfo);
+    if(filter_flags.indexOf(`${jsinfo['type']}`) > -1) {
+        if (infoCount <= 50) {
+            add_event(type, jsinfo);
+            infoCount++;
+        } else {
+            $("#one_event").remove();
+            add_event(type, jsinfo);
+        }
     }
 }
+
+
