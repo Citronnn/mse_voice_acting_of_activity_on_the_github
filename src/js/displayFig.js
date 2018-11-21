@@ -27,7 +27,7 @@ let pullOnly = false;
 let infoCount = 0;
 
 let audio = [];
-const audio_size=48;
+const audio_size=67;
 for(let i=1;i<audio_size+1;i++){
     audio.push(new Audio("audio/"+i+".mp3"));
 }
