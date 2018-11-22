@@ -10,27 +10,18 @@
 * Запуск виртуального окружения:  
 `source /path/to/new/virtual/environment/bin/activate`
 
+
 Установка необходимых библиотек для Python (необходим Python 3.6 или выше):  
 ```
-pip3 install bottle github3.py websocket-server
+sudo pip3 install bottle github3.py websocket-server
 ```
 
-Для запуска python backend необходимо запускать скрипт из папки src
+Для запуска приложения следует перейти в директорию src и запустить backend.py 
 ```
-python backend.py
-```
-
-Для linux
-```
-python3.6 backend.py
-```
-
-Для запуска приложения слежует перейти в папку src и запустить backend.py 
-```
-cd src || sudo python3.6 backend.py
+cd src && sudo python3.6 backend.py
 ```
 
 далее приложение в браузере будет доступно по адресу 
 ```
-127.0.0.1
+127.0.0.1:80
 ```
