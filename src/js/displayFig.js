@@ -1,4 +1,6 @@
 const time_of_life = 150;
+const audio_size = 67;
+
 let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66","#FFCC00","#FFCC33",
     "#CC9933","#996600","#FF9900","#FF9933","#CC9966","#CC6600","#FFCC99","#FF9966","#FF6600",
     "#CC6633","#993300","#FF6633","#CC3300","#FF3300","#FF0000","#CC0000","#990000","#FFCCCC","#FF9999",
@@ -19,6 +21,7 @@ let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66
     "#CCFF99","#99FF66","#66CC00","#66CC33","#669933","#336600","#99FF00","#99FF33","#99CC66","#99CC00","#99CC33",
     "#669900","#CCFF66","#CCFF00","#CCFF33","#CCCC99","#CCCC66","#CCCC33","#999933",
     "#999900"];
+
 let isLight = true;
 
 let pushOnly = false;
@@ -26,11 +29,7 @@ let pullOnly = false;
 
 let infoCount = 0;
 
-let audio = [];
-const audio_size=67;
-for(let i=1;i<audio_size+1;i++){
-    audio.push(new Audio("audio/"+i+".mp3"));
-}
+
 $(document).ready(function () {
     filterChange();
     $('#changecolors').click(function () {
@@ -70,8 +69,9 @@ let id=0;
 
 function createFig(type,info) {
     let rand_array = rands();
-    audio[rand_array[4]].volume = $('#volinp').val()/100;
-    audio[rand_array[4]].play();
+
+    playSound(rand_array[4], $('#volinp').val()/100);
+
     let idl=id++;
     if(id === 1000)
         id=0;
@@ -191,4 +191,20 @@ function infoonFig(info) {
     }
 }
 
+let cached_sounds = {};
 
+function playSound(index, volume) {
+    let file = "audio/" + (index+1) + ".mp3";
+    if(file in cached_sounds){
+        cached_sounds[file].volume(volume);
+        cached_sounds[file].play();
+    }
+    else{
+        let a = new Howl({
+            src: [file],
+            volume: volume
+        });
+        a.play();
+        cached_sounds[file] = a;
+    }
+}
