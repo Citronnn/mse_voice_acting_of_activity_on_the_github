@@ -25,4 +25,7 @@ python backend.py
 python3.6 backend.py
 ```
 
-статическую HTML страницу `mse_voice_acting_of_activity_on_the_github/src/frontend.html` необходимо открыть с помощью браузера
+Для запуска приложения слежует перейти в папку src и запустить backend.py 
+```
+cd src || sudo python3.6 backend.py
+```
