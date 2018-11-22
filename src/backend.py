@@ -1,3 +1,4 @@
+from bottle import route, run, static_file
 from github3 import GitHub
 from github3.events import Event
 from github3.exceptions import NotFoundError
@@ -482,8 +483,20 @@ class Server:
             client.send(message)
 
 
-server = Server()
-Thread(target=lambda: server.run(), name='WebSocket server').start()
-Thread(target=download_events, name="Download events").start()
-Thread(target=handle_events, name="Handle events").start()
-Thread(target=send_events, name="Send events").start()
+if __name__ == '__main__':
+
+    server = Server()
+    Thread(target=lambda: server.run(), name='WebSocket server').start()
+    Thread(target=download_events, name="Download events").start()
+    Thread(target=handle_events, name="Handle events").start()
+    Thread(target=send_events, name="Send events").start()
+
+    @route('/')
+    def index():
+        return static_serve('frontend.html')
+
+    @route('/<file:path>')
+    def static_serve(file):
+        return static_file(file, root='.')
+
+    run(host=Server.local_ip, port=80)
