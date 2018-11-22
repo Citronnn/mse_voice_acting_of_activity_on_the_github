@@ -1,4 +1,4 @@
-from bottle import route, run, static_file
+from bottle import route, run, static_file, template
 from github3 import GitHub
 from github3.events import Event
 from github3.exceptions import NotFoundError
@@ -493,7 +493,7 @@ if __name__ == '__main__':
 
     @route('/')
     def index():
-        return static_serve('frontend.html')
+        return template('frontend.html', ip=Server.ip, port=Server.port)
 
     @route('/<file:path>')
     def static_serve(file):
