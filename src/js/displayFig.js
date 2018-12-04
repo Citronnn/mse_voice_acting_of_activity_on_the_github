@@ -171,7 +171,15 @@ function use_all_filters_flags() {
     filterChange();
 }
 function add_event(type, jsinfo) {
-    $("#eventfield").append(`<div id="one_event"><a href="${jsinfo["url"]}" target="_blank">${jsinfo["repo"]} ${jsinfo["url"]}</div>`);
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+    let date_string = year + '-' + month + '-' + day + '  ' + hours + ':' + minutes + ':' + seconds + ' - ';
+    $("#eventfield").append(`<div id="one_event">${date_string}${jsinfo["type"]} - <a href="${jsinfo["url"]}" target="_blank">${jsinfo["repo"]}</div>`);
     $("#eventfield").scrollTop($("#eventfield")[0].scrollHeight);
     createFig(type, jsinfo);
 }
