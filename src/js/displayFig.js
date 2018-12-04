@@ -184,7 +184,7 @@ function add_event(type, jsinfo) {
         seconds = '0' + seconds;
     let date_string = year + '-' + month + '-' + day + '  ' + hours + ':' + minutes + ':' + seconds + ' - ';
     $("#eventfield").append(`<div id="one_event">${date_string}${jsinfo["type"]} - <a href="${jsinfo["url"]}" 
-    target="_blank">${jsinfo["owner"]}/${jsinfo["repo"]}</div>`);
+    target="_blank">${jsinfo["owner"]} / ${jsinfo["repo"]}</div>`);
     $("#eventfield").scrollTop($("#eventfield")[0].scrollHeight);
     createFig(type, jsinfo);
 }
