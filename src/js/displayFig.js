@@ -31,9 +31,14 @@ const audio_size=48;
 for(let i=1;i<audio_size+1;i++){
     audio.push(new Audio("audio/"+i+".mp3"));
 }
+
+
+
 $(document).ready(function () {
-    filterChange();
+    getStateFromCookies();
+    //filterChange();
     $('#changecolors').click(function () {
+
         if(isLight) {
             $('body').css('background-color','#292929');
             $('#displaydiv').css('background-color','#363535');
@@ -60,6 +65,11 @@ $(document).ready(function () {
         }
     });
 });
+
+window.onunload = function(){
+    saveStateInCookies();
+}
+
 setInterval(function(){
     if($(window).width()>$('#displaydiv').width())
         $('#displaydiv').css('min-width',$(window).width()*0.96);
@@ -154,6 +164,7 @@ let filter_flags = [];
 function filterChange(){
     filter_flags=[];
     let tmp_mass =  $("input:checkbox:checked");
+
     for ( let key in tmp_mass){
         filter_flags.push(tmp_mass[key].value)
     }
@@ -192,3 +203,140 @@ function infoonFig(info) {
 }
 
 
+// возвращает cookie с именем name, если есть, если нет, то undefined
+function getCookie(name) {
+    var matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+function setCookie(name, value, options) {
+    options = options || {};
+
+    var expires = options.expires;
+
+    if (typeof expires == "number" && expires) {
+        var d = new Date();
+        d.setTime(d.getTime() + expires * 1000);
+        expires = options.expires = d;
+    }
+    if (expires && expires.toUTCString) {
+        options.expires = expires.toUTCString();
+    }
+
+    value = encodeURIComponent(value);
+
+    var updatedCookie = name + "=" + value;
+
+    for (var propName in options) {
+        updatedCookie += "; " + propName;
+        var propValue = options[propName];
+        if (propValue !== true) {
+            updatedCookie += "=" + propValue;
+        }
+    }
+
+    document.cookie = updatedCookie;
+}
+
+function deleteCookie(name) {
+    setCookie(name, "", {
+        expires: -1
+    })
+}
+
+function saveStateInCookies() {
+    alert("Prevet")
+    setCookie("isLight", isLight);
+    setCookie("volume", $("#volinp").val());
+    let tmp_mass =  $("input:checkbox");
+
+    for ( let key in tmp_mass){
+        setCookie(tmp_mass[key].id, tmp_mass[key].checked);
+    }
+}
+
+function getStateFromCookies() {
+
+
+    let isL = getCookie("isLight");
+    let vol = getCookie('volume');
+    let tmp_mass = $("input:checkbox");
+
+    if(isL == "false") {
+        $('body').css('background-color','#292929');
+        $('#displaydiv').css('background-color','#363535');
+        $('#VA').css('color', '#ffffff');
+        $('#IE').css('color', '#ffffff');
+        $('#bar').css('color', '#ffffff');
+        $('#changecolors').html("Go to Light");
+        $('#back_figure').css('background-color','#87918F');
+        $('#changecolors').removeClass('w3-black').addClass('w3-white');
+        $('#eventfield').css('color', '#ffffff');
+        isLight = false;
+    }
+    else{
+        $('body').css('background-color','white');
+        $('#displaydiv').css('background-color', '#e8e8e7');
+        $('#back_figure').css('background-color','#F5F5DC');
+        $('#VA').css('color', '#000000');
+        $('#IE').css('color', '#000000');
+        $('#bar').css('color', '#000000');
+        $('#changecolors').html("Go to Dark");
+        $('#changecolors').removeClass('w3-white').addClass('w3-black');
+        $('#eventfield').css('color', '#000000');
+        isLight = true;
+    }
+
+
+    if(vol !== undefined && Number(vol) > 0) {
+        $("#volinp").val(Number(vol));
+    }
+   else{
+        filterChange();
+        removeCookiesWithSettings();
+        return;
+    }
+
+    let checkCounter = 0;
+    for ( let key in tmp_mass){
+       let state = getCookie(tmp_mass[key].id+"");
+       if (tmp_mass[key].id == 1 && state == "true" ) {
+           $('.filterMain').prop('checked', true);
+           $('.filtercheck').prop('checked', true);
+           checkCounter++;
+           break;
+       }
+
+       if(state !== undefined ){
+           if (state == "true") {
+               $("#" + tmp_mass[key].id).prop('checked', true);
+               checkCounter++;
+           }
+           else{
+               $("#" + tmp_mass[key].id).prop('checked', false);
+           }
+       }
+    }
+
+    if(checkCounter == 0) {
+
+        filterChange();
+        removeCookiesWithSettings();
+    }
+}
+
+function removeCookiesWithSettings() {
+    deleteCookie("isLight");
+    deleteCookie('volume');
+    let tmp_mass =  $("input:checkbox");
+
+    for ( let key in tmp_mass){
+        deleteCookie(tmp_mass[key].id+"");
+    }
+
+    $("#volinp").val(20);
+    $("#3").prop('checked', true)
+    ;
+}
