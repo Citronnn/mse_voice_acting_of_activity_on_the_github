@@ -180,7 +180,10 @@ function infoonFig(info) {
     let type = Math.floor(Math.random() * (3));
    // $("#back_figure").remove();
     let jsinfo = JSON.parse(info);
-    if(filter_flags.indexOf(`${jsinfo['type']}`) > -1) {
+    if(jsinfo['type']==='error'){
+        alert('error');
+    }
+    else if(filter_flags.indexOf(`${jsinfo['type']}`) > -1) {
         if (infoCount <= 50) {
             add_event(type, jsinfo);
             infoCount++;
