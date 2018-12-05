@@ -503,7 +503,7 @@ if __name__ == '__main__':
 
     @route('/')
     def index():
-        return template('frontend.html'), ip=Server.ip, port=Server.port)
+        return template('frontend.html', ip=Server.ip, port=Server.port)
 
     @route('/<file:path>')
     def static_serve(file):
