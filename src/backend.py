@@ -421,14 +421,17 @@ class VisualGithubClient:
         if message[2:6] == 'type':
             msg = loads(message);
             if msg['type'] == 'filter' and len(msg['org']) and len(msg['repo']):
-                if msg['org'][0]=='[' and msg['org'][-1]==']' and msg['repo'][0]=='[' and msg['repo'][-1]==']':
+                if msg['org'][0]!='[' or msg['org'][-1]!=']':
+                    if msg['repo'][0]!='[' or msg['repo'][-1]!=']':
+                        self.send({'type': "error", 'where': ["org","repo"]});
+                    else:
+                        self.send({'type': "error", 'where': "org"});
+                elif msg['repo'][0]!='[' or msg['repo'][-1]!=']':
+                    self.send({'type': "error", 'where': "repo"});
+                else:
                     print("Ok");
                     #Действия
-                else:
-                    self.handler.send_message(dumps({
-                         "type": "error",
-                         "where": ["org", "repo"]
-                         }));
+
 
     def left(self, srv: 'Server') -> None:
         del srv.clients[self.id]

@@ -265,6 +265,7 @@
                 if (self.debug || ReconnectingWebSocket.debugAll) {
                     console.debug('ReconnectingWebSocket', 'onerror', self.url, event);
                 }
+                alert("kek");
                 eventTarget.dispatchEvent(generateEvent('error'));
             };
         }
