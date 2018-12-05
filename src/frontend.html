@@ -61,7 +61,12 @@
         <button class="w3-btn w3-green w3-margin-bottom" id="pullOnly" onclick="filter_pull()">Swith Pull requests only</button>  -->
         <div>
             <p>Organization and repo</p>
-            <input id="organization" type="text" onblur="orgChoose();"> / <input id="repos" onblur="orgChoose()">
+            <input id="organization" type="text"
+                   onfocus="document.getElementById('organization').classList.remove('error_filter_org');"
+                   onblur="orgChoose();">
+            / <input id="repos"
+                     onfocus="document.getElementById('repos').classList.remove('error_filter_org');"
+                     onblur="orgChoose()">
         </div>
         <br>
         <div id="eventfield"></div>

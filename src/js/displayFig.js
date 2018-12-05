@@ -181,7 +181,15 @@ function infoonFig(info) {
    // $("#back_figure").remove();
     let jsinfo = JSON.parse(info);
     if(jsinfo['type']==='error'){
-        alert('error');
+        if(jsinfo['where'][0].length === 3){
+            document.getElementById('organization').classList.add('error_filter_org');
+            document.getElementById('repos').classList.add('error_filter_org');
+        }
+        else if(jsinfo['where'] === 'org'){
+            document.getElementById('organization').classList.add('error_filter_org');
+        }
+        else
+            document.getElementById('repos').classList.add('error_filter_org');
     }
     else if(filter_flags.indexOf(`${jsinfo['type']}`) > -1) {
         if (infoCount <= 50) {

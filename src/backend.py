@@ -421,12 +421,12 @@ class VisualGithubClient:
         if message[2:6] == 'type':
             msg = loads(message);
             if msg['type'] == 'filter' and len(msg['org']) and len(msg['repo']):
-                if msg['org'][0]!='[' or msg['org'][-1]!=']':
-                    if msg['repo'][0]!='[' or msg['repo'][-1]!=']':
+                if msg['org'][0]!='[' or msg['org'][-1]!=']' or msg['org'].count('[')!= msg['org'].count(']'):
+                    if msg['repo'][0]!='[' or msg['repo'][-1]!=']' or msg['repo'].count('[')!= msg['repo'].count(']'):
                         self.send({'type': "error", 'where': ["org","repo"]});
                     else:
                         self.send({'type': "error", 'where': "org"});
-                elif msg['repo'][0]!='[' or msg['repo'][-1]!=']':
+                elif msg['repo'][0]!='[' or msg['repo'][-1]!=']' or msg['repo'].count('[')!= msg['repo'].count(']'):
                     self.send({'type': "error", 'where': "repo"});
                 else:
                     print("Ok");
