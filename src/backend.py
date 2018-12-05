@@ -8,7 +8,7 @@ from threading import Thread, Lock
 from typing import List, Dict
 from time import sleep
 from datetime import datetime, timedelta
-from json import dumps
+from json import dumps,loads
 from json.decoder import JSONDecodeError
 from websocket_server import WebsocketServer, WebSocketHandler
 from pprint import pprint
@@ -410,13 +410,25 @@ class VisualGithubClient:
     def send(self, obj: dict) -> None:
         try:
             msg = dumps(obj)
+            #print(msg)
             Debug.send(f'Send to {self.id}: {"{ JSON event }"}')
             self.handler.send_message(msg)
         except BrokenPipeError:
             Debug.error(f'Broken pipe error send id = {self.id}')
 
     def receive(self, srv: 'Server', message: str, client: dict):
-        pass
+        print(message);
+        if message[2:6] == 'type':
+            msg = loads(message);
+            if msg['type'] == 'filter' and len(msg['org']) and len(msg['repo']):
+                if msg['org'][0]=='[' and msg['org'][-1]==']' and msg['repo'][0]=='[' and msg['repo'][-1]==']':
+                    print("Ok");
+                    #Действия
+                else:
+                    self.handler.send_message(dumps({
+                         "type": "error",
+                         "where": ["org", "repo"]
+                         }));
 
     def left(self, srv: 'Server') -> None:
         del srv.clients[self.id]
@@ -482,9 +494,7 @@ class Server:
         for client in list(self.clients.values()):
             client.send(message)
 
-
 if __name__ == '__main__':
-
     server = Server()
     Thread(target=lambda: server.run(), name='WebSocket server').start()
     Thread(target=download_events, name="Download events").start()
@@ -493,7 +503,7 @@ if __name__ == '__main__':
 
     @route('/')
     def index():
-        return template('frontend.html', ip=Server.ip, port=Server.port)
+        return template('frontend.html'), ip=Server.ip, port=Server.port)
 
     @route('/<file:path>')
     def static_serve(file):
