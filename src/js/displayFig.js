@@ -1,4 +1,4 @@
-const time_of_life = 150;
+const time_of_life = 20;
 const audio_size = 67;
 
 let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66","#FFCC00","#FFCC33",
@@ -67,13 +67,14 @@ setInterval(function(){
 },0);
 let id=0;
 
+
 function createFig(type,info) {
     let rand_array = rands();
 
     playSound(rand_array[4], $('#volinp').val()/100);
 
     let idl=id++;
-    if(id === 1000)
+    if(id === 2*time_of_life)
         id=0;
     let br = 0;
     let rot = 0;
@@ -102,17 +103,18 @@ function createFig(type,info) {
         "opacity":"0"
     },back_fig_anim_time);
     setTimeout(()=>{$("#displaydiv  div:last").remove();},2000);
-    setTimeout(function(){
-        if(time_of_life >= 200) {
-            $(`#${idl}`).animate({"opacity": "0"}, 1000);
-            setTimeout(() => {
-                $(`#${idl}`).remove()
-            }, 1000);
-        }
-        else
-            $(`#${idl}`).remove();
-    },40*time_of_life);
-
+    let deleter = time_of_life;
+    if(idl >= time_of_life) {
+        deleter = -deleter;
+    }
+    if(time_of_life < 30) {
+        $(`#${idl + deleter}`).animate({"opacity": "0"}, 1000);
+        setTimeout(() => {
+            $(`#${idl + deleter}`).remove()
+        }, 1000);
+    }
+    else
+        $(`#${idl + deleter}`).remove()
 }
 
 
