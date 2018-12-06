@@ -29,10 +29,13 @@ let pushOnly = false;
 let pullOnly = false;
 
 let infoCount = 0;
-
+window.onunload = function(){
+    saveStateInCookies();
+}
 
 $(document).ready(function () {
-    filterChange();
+    getStateFromCookies();
+    //filterChange();
     $('#changecolors').click(function () {
         if(isLight) {
             $('body').css('background-color','#292929');
@@ -209,4 +212,127 @@ function playSound(index, volume) {
         a.play();
         cached_sounds[file] = a;
     }
+}
+
+function setCookie(name,value,days = 1) {
+    let expires = '';
+    if (days) {
+        let date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = '; expires='+ date.toUTCString();
+    }
+    document.cookie = name + '=' + value + expires + '; path=/';
+}
+
+function getCookie(name) {
+    let nameEQ = name + '=';
+    let ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0)=== ' '){
+            c = c.substring(1, c.length);
+        }
+        if (c.indexOf(nameEQ) === 0) {
+            return c.substring(nameEQ.length, c.length);
+        }
+    }
+    return null;
+}
+
+function  deleteCookie(name) {
+    setCookie(name, '', -1);
+}
+
+
+
+function saveStateInCookies() {
+    alert("Prevet")
+    setCookie("isLight", isLight);
+    setCookie("volume", $("#volinp").val());
+    let tmp_mass =  $("input:checkbox");
+
+    for ( let key in tmp_mass){
+        setCookie(tmp_mass[key].id, tmp_mass[key].checked);
+    }
+}
+
+function getStateFromCookies() {
+
+
+    let isL = getCookie("isLight");
+    let vol = getCookie('volume');
+    let tmp_mass = $("input:checkbox");
+
+    if(isL == "false") {
+        $('body').css('background-color','#292929');
+        $('#displaydiv').css('background-color','#363535');
+        $('#VA').css('color', '#ffffff');
+        $('#IE').css('color', '#ffffff');
+        $('#bar').css('color', '#ffffff');
+        $('#changecolors').html("Go to Light");
+        $('#back_figure').css('background-color','#87918F');
+        $('#changecolors').removeClass('w3-black').addClass('w3-white');
+        $('#eventfield').css('color', '#ffffff');
+        isLight = false;
+    }
+    else{
+        $('body').css('background-color','white');
+        $('#displaydiv').css('background-color', '#e8e8e7');
+        $('#back_figure').css('background-color','#F5F5DC');
+        $('#VA').css('color', '#000000');
+        $('#IE').css('color', '#000000');
+        $('#bar').css('color', '#000000');
+        $('#changecolors').html("Go to Dark");
+        $('#changecolors').removeClass('w3-white').addClass('w3-black');
+        $('#eventfield').css('color', '#000000');
+        isLight = true;
+    }
+
+    let numVol = Number(vol) >= 0;
+
+    if(vol !== undefined && numVol >= 0 && numVol<=100 ) {
+        $("#volinp").val(vol);
+    }
+    else{
+        removeCookiesWithSettings();
+        return;
+    }
+
+    let checkCounter = 0;
+    for ( let key in tmp_mass){
+        let state = getCookie(tmp_mass[key].id+"");
+        if (tmp_mass[key].id == 1 && state == "true" ) {
+            $('.filterMain').prop('checked', true);
+            $('.filtercheck').prop('checked', true);
+            checkCounter++;
+            break;
+        }
+
+        if(state !== undefined ){
+            if (state == "true") {
+                $("#" + tmp_mass[key].id).prop('checked', true);
+                checkCounter++;
+            }
+            else{
+                $("#" + tmp_mass[key].id).prop('checked', false);
+            }
+        }
+    }
+
+    if(checkCounter == 0) {
+        removeCookiesWithSettings();
+    }
+}
+
+function removeCookiesWithSettings() {
+    deleteCookie("isLight");
+    deleteCookie('volume');
+    let tmp_mass = $("input:checkbox");
+
+    for (let key in tmp_mass) {
+        deleteCookie(tmp_mass[key].id + "");
+    }
+
+    $("#volinp").val(20);
+    $("#2").prop('checked', true);
 }
