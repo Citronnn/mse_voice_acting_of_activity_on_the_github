@@ -98,10 +98,11 @@ function createFig(type,info) {
         "height":"+=50px",
         "opacity":"0"
     },animation_time);
+    let id_to_remove = idl - max_count_of_figures;
     setTimeout(()=>{$("#displaydiv  div:last").remove();},animation_time);
-    $(`#${idl - max_count_of_figures}`).animate({"opacity": "0"}, animation_time);
+    $(`#${id_to_remove}`).animate({"opacity": "0"}, animation_time);
     setTimeout(() => {
-        $(`#${idl - max_count_of_figures}`).remove()
+        $(`#${id_to_remove}`).remove()
     }, animation_time);
 }
 
