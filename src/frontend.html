@@ -59,6 +59,16 @@
         <input type="checkbox" id="11" class="w3-check w3-margin-bottom filtercheck" value="commit_comment" onclick="filterChange();"><label class="checkboxes" for="11">CommitComment</label>
        <!-- <button class="w3-btn w3-green w3-margin-bottom" id="pushOnly" onclick="filter_push()">Switch Pushes only</button>
         <button class="w3-btn w3-green w3-margin-bottom" id="pullOnly" onclick="filter_pull()">Swith Pull requests only</button>  -->
+        <div>
+            <p>Organization and repo</p>
+            <input id="organization" type="text"
+                   onfocus="document.getElementById('organization').classList.remove('error_filter_org');"
+                   onblur="orgChoose();">
+            / <input id="repos"
+                     onfocus="document.getElementById('repos').classList.remove('error_filter_org');"
+                     onblur="orgChoose()">
+        </div>
+        <br>
         <div id="eventfield"></div>
 
     </div>

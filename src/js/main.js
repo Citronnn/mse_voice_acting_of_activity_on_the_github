@@ -343,11 +343,9 @@
 
     return ReconnectingWebSocket;
 });
-
+var ws = new ReconnectingWebSocket(`ws://${ip}:${port}`);
 //Creation ReconnectingWebSocket
 function WebSocketInit() {
-
-    var ws = new ReconnectingWebSocket(`ws://${ip}:${port}`);
     ws.onopen = function() {
         ws.send("Message to send");
     };
@@ -365,3 +363,12 @@ function WebSocketInit() {
 }
 
 //End of the websocket part
+function orgChoose() {
+    let org = {
+        'type':'filter',
+        'org':`${$("#organization").val()}`,
+        'repo':`${$("#repos").val()}`
+    };
+    //alert(JSON.stringify(org))
+    ws.send(JSON.stringify(org));
+}
