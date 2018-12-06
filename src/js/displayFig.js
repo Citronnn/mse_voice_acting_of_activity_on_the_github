@@ -1,4 +1,4 @@
-const time_of_life = 20;
+const max_count_of_figures = 20;
 const audio_size = 67;
 
 let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66","#FFCC00","#FFCC33",
@@ -74,13 +74,13 @@ function createFig(type,info) {
     playSound(rand_array[4], $('#volinp').val()/100);
 
     let idl=id++;
-    if(id === 2*time_of_life)
+    if(id === 2*max_count_of_figures)
         id=0;
     let br = 0;
     let rot = 0;
     let back_fig_anim_time = 2000;
-    if(time_of_life < 50)
-        back_fig_anim_time=40*time_of_life;
+    if(max_count_of_figures < 50)
+        back_fig_anim_time=40*max_count_of_figures;
     if(type === 0){
         br = rand_array[2]/2;
     }
@@ -103,11 +103,11 @@ function createFig(type,info) {
         "opacity":"0"
     },back_fig_anim_time);
     setTimeout(()=>{$("#displaydiv  div:last").remove();},2000);
-    let deleter = time_of_life;
-    if(idl >= time_of_life) {
+    let deleter = max_count_of_figures;
+    if(idl >= max_count_of_figures) {
         deleter = -deleter;
     }
-    if(time_of_life < 30) {
+    if(max_count_of_figures < 30) {
         $(`#${idl + deleter}`).animate({"opacity": "0"}, 1000);
         setTimeout(() => {
             $(`#${idl + deleter}`).remove()
