@@ -1,4 +1,5 @@
-const time_of_life = 150;
+const max_count_of_figures = 20;
+const animation_time = 2000;
 const audio_size = 67;
 
 let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66","#FFCC00","#FFCC33",
@@ -67,19 +68,15 @@ setInterval(function(){
 },0);
 let id=0;
 
+
 function createFig(type,info) {
     let rand_array = rands();
 
     playSound(rand_array[4], $('#volinp').val()/100);
 
     let idl=id++;
-    if(id === 1000)
-        id=0;
     let br = 0;
     let rot = 0;
-    let back_fig_anim_time = 2000;
-    if(time_of_life < 50)
-        back_fig_anim_time=40*time_of_life;
     if(type === 0){
         br = rand_array[2]/2;
     }
@@ -100,19 +97,13 @@ function createFig(type,info) {
         "border-radius":"+50px",
         "height":"+=50px",
         "opacity":"0"
-    },back_fig_anim_time);
-    setTimeout(()=>{$("#displaydiv  div:last").remove();},2000);
-    setTimeout(function(){
-        if(time_of_life >= 200) {
-            $(`#${idl}`).animate({"opacity": "0"}, 1000);
-            setTimeout(() => {
-                $(`#${idl}`).remove()
-            }, 1000);
-        }
-        else
-            $(`#${idl}`).remove();
-    },40*time_of_life);
-
+    },animation_time);
+    let id_to_remove = idl - max_count_of_figures;
+    setTimeout(()=>{$("#displaydiv  div:last").remove();},animation_time);
+    $(`#${id_to_remove}`).animate({"opacity": "0"}, animation_time);
+    setTimeout(() => {
+        $(`#${id_to_remove}`).remove()
+    }, animation_time);
 }
 
 
