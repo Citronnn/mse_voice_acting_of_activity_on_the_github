@@ -48,7 +48,8 @@ def download_events():
                     new_events += [event]
                 else:
                     break
-            last_event = new_events[0]
+            if len(new_events):
+                last_event = new_events[0]
             event_queue[0:0] = new_events
         except ServerError:
             print("Server error occurred")
@@ -57,11 +58,12 @@ def download_events():
         except ConnectionAbortedError:
             print("Connection aborted error occurred")
 
-        pushes = sum(event.type == "PushEvent" for event in event_queue)
-        print(f'{event_queue[-1].created_at.time()}-'
-              f'{event_queue[0].created_at.time()}, '
-              f'events: {len(event_queue)}, '
-              f'pushes: {pushes}')
+        if len(event_queue):
+            pushes = sum(event.type == "PushEvent" for event in event_queue)
+            print(f'{event_queue[-1].created_at.time()}-'
+                  f'{event_queue[0].created_at.time()}, '
+                  f'events: {len(event_queue)}, '
+                  f'pushes: {pushes}')
 
         sleep(10)
 
@@ -135,7 +137,7 @@ def handle_events():
                     ]
 
             elif event.type == 'CreateEvent':
-                pass
+                continue
 
                 time_created = event.created_at.time()
                 event = event.as_dict()
@@ -401,38 +403,29 @@ class VisualGithubClient:
             Debug.error(f'Key error possibly double '
                         f'deleting id = {self.id}')
 
-    def send_raw(self, message: str) -> None:
-        try:
-            Debug.send(f'Send to {self.id}: {"{ JSON event }"}')
-            self.handler.send_message(message)
-        except BrokenPipeError:
-            Debug.error(f'Broken pipe error send raw id = {self.id}')
-
     def send(self, obj: dict) -> None:
         try:
             msg = dumps(obj)
-            #print(msg)
             Debug.send(f'Send to {self.id}: {"{ JSON event }"}')
             self.handler.send_message(msg)
         except BrokenPipeError:
             Debug.error(f'Broken pipe error send id = {self.id}')
 
     def receive(self, srv: 'Server', message: str, client: dict):
-        print(message);
+        print(message)
         if message[2:6] == 'type':
-            msg = loads(message);
+            msg = loads(message)
             if msg['type'] == 'filter' and len(msg['org']) and len(msg['repo']):
                 if msg['org'][0]!='[' or msg['org'][-1]!=']' or msg['org'].count('[')!= msg['org'].count(']'):
                     if msg['repo'][0]!='[' or msg['repo'][-1]!=']' or msg['repo'].count('[')!= msg['repo'].count(']'):
-                        self.send({'type': "error", 'where': ["org","repo"]});
+                        self.send({'type': "error", 'where': ["org","repo"]})
                     else:
-                        self.send({'type': "error", 'where': "org"});
+                        self.send({'type': "error", 'where': "org"})
                 elif msg['repo'][0]!='[' or msg['repo'][-1]!=']' or msg['repo'].count('[')!= msg['repo'].count(']'):
-                    self.send({'type': "error", 'where': "repo"});
+                    self.send({'type': "error", 'where': "repo"})
                 else:
-                    print("Ok");
-                    #Действия
-
+                    print("Ok")
+                    # Действия
 
     def left(self, srv: 'Server') -> None:
         del srv.clients[self.id]
@@ -498,7 +491,9 @@ class Server:
         for client in list(self.clients.values()):
             client.send(message)
 
+
 if __name__ == '__main__':
+
     server = Server()
     Thread(target=lambda: server.run(), name='WebSocket server').start()
     Thread(target=download_events, name="Download events").start()
