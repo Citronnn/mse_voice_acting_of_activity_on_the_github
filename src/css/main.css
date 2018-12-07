@@ -24,7 +24,9 @@
 #bar{
     transition: color 0.5s ease;
 }
-
+#id01{
+    z-index: 3000;
+}
 #eventfield{
     overflow-y:scroll;
     text-align: left;
