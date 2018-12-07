@@ -32,6 +32,10 @@
     text-align: left;
 }
 
+.black{
+    background-color: #292929;
+}
+
 .filtercheck{
     margin-left: 8px;
     width: 64px;

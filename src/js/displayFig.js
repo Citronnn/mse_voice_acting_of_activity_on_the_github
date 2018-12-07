@@ -51,6 +51,16 @@ $(document).ready(function () {
             $('#back_figure').css('background-color','#87918F');
             $('#changecolors').removeClass('w3-black').addClass('w3-white');
             $('#eventfield').css('color', '#ffffff');
+
+
+            for (let i=1; i<12; i++){
+                let button = $('#' + i);
+                if (button.hasClass('w3-white'))
+                    button.removeClass('w3-white').addClass('black');
+                else
+                    button.removeClass('black').addClass('w3-white');
+            }
+
             isLight = false;
         }
         else{
@@ -63,6 +73,15 @@ $(document).ready(function () {
             $('#changecolors').html("Go to Dark");
             $('#changecolors').removeClass('w3-white').addClass('w3-black');
             $('#eventfield').css('color', '#000000');
+
+            for (let i=1; i<12; i++){
+                let button = $('#' + i);
+                if (button.hasClass('w3-white'))
+                    button.removeClass('w3-white').addClass('black');
+                else
+                    button.removeClass('black').addClass('w3-white');
+            }
+
             isLight = true;
         }
     });
@@ -125,8 +144,19 @@ function rands(){
 }
 
 let filter_flags = [];
-function filterChange(){
-    filter_flags=[];
+function filterChange(id){
+    //TODO Фильтрация по кнопкам, а не по чекбоксам 1
+    if(id) {
+        let button = $('#' + id);
+        if (button.hasClass('w3-white')) {
+            button.removeClass('w3-white').addClass('black');
+        }
+        else {
+            button.removeClass('black').addClass('w3-white');
+        }
+    }
+
+   /* filter_flags=[];
     let tmp_mass =  $("input:checkbox:checked");
     for ( let key in tmp_mass){
         filter_flags.push(tmp_mass[key].value)
@@ -134,15 +164,16 @@ function filterChange(){
     if(tmp_mass.length===10 && $('.filterMain')[0].checked === false )
         $('.filterMain').prop('checked', true);
     else if (tmp_mass.length!==11)
-        $('.filterMain').prop('checked', false);
+        $('.filterMain').prop('checked', false);*/
 }
 
 function use_all_filters_flags() {
-    if($('.filterMain')[0].checked === true)
+    //TODO Фильтрация по кнопкам, а не по чекбоксам 2
+    /*if($('.filterMain')[0].checked === true)
         $('.filtercheck').prop('checked', true);
     else
         $('.filtercheck').prop('checked', false);
-    filterChange();
+    filterChange();*/
 }
 function add_event(type, jsinfo) {
     let date = new Date();
