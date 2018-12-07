@@ -362,6 +362,9 @@ function WebSocketInit() {
 
 }
 
+function filterChoose(filter_json) {
+    ws.send(JSON.stringify(filter_json));
+}
 //End of the websocket part
 function orgChoose() {
     let org = {
