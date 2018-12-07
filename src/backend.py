@@ -135,6 +135,7 @@ def handle_events():
                     ]
 
             elif event.type == 'CreateEvent':
+                pass
 
                 time_created = event.created_at.time()
                 event = event.as_dict()
