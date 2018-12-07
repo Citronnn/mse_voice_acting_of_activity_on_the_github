@@ -144,30 +144,24 @@ function rands(){
 }
 
 let filter_flags = [];
-function filterChange(id=-1){
-    if(id !== -1) {
-        let button = $('#' + id);
-        if (button.hasClass('w3-white')) {
-            button.removeClass('w3-white').addClass('black');
-        }
-        else {
-            button.removeClass('black').addClass('w3-white');
-        }
-
-
-        let filter_json = {type: 'filter'};
-        for (let i = 2; i < 12; i++) {
-            if (i !== 4) {
-                let button = $('#' + i);
-                if (button.hasClass('w3-white'))
-                    filter_json[button.val()] = !isLight;
-                else
-                    filter_json[button.val()] = isLight;
-            }
-        }
-        filterChoose(filter_json);
+function filterChange(id){
+    let button = $('#' + id);
+    if (button.hasClass('w3-white')) {
+        button.removeClass('w3-white').addClass('black');
+    }
+    else {
+        button.removeClass('black').addClass('w3-white');
     }
 
+    let filter_json = {type: 'filter'};
+    for (let i = 1; i <= 9; i++) {
+        let button = $('#' + i);
+        if (button.hasClass('w3-white'))
+            filter_json[button.val()] = !isLight;
+        else
+            filter_json[button.val()] = isLight;
+    }
+    filterChoose(filter_json);
 }
 
 function use_all_filters_flags() {
@@ -180,15 +174,13 @@ function use_all_filters_flags() {
     }
 
     let filter_json = {type:'filter'};
-    for (let i=2; i<12; i++){
-        if (i !== 4) {
-            let button = $('#' + i);
-            filter_json[button.val()] = true;
-        }
+    for (let i = 1; i <= 9; i++){
+        let button = $('#' + i);
+        filter_json[button.val()] = true;
     }
     filterChoose(filter_json);
-
 }
+
 function add_event(type, jsinfo) {
     let date = new Date();
     let year = date.getFullYear();
@@ -288,7 +280,7 @@ function saveStateInCookies() {
     alert("Prevet")
     setCookie("isLight", isLight);
     setCookie("volume", $("#volinp").val());
-    let tmp_mass =  $("input:checkbox");
+    let tmp_mass =  $("input:image");
 
     for ( let key in tmp_mass){
         setCookie(tmp_mass[key].id, tmp_mass[key].checked);
@@ -300,7 +292,7 @@ function getStateFromCookies() {
 
     let isL = getCookie("isLight");
     let vol = getCookie('volume');
-    let tmp_mass = $("input:checkbox");
+    let tmp_mass = $("input:image");
 
     if(isL == "false") {
         $('body').css('background-color','#292929');
@@ -366,12 +358,12 @@ function getStateFromCookies() {
 function removeCookiesWithSettings() {
     deleteCookie("isLight");
     deleteCookie('volume');
-    let tmp_mass = $("input:checkbox");
+    let tmp_mass = $("input:image");
 
     for (let key in tmp_mass) {
         deleteCookie(tmp_mass[key].id + "");
     }
 
     $("#volinp").val(20);
-    $("#2").prop('checked', true);
+    $("#1").prop('checked', true);
 }
