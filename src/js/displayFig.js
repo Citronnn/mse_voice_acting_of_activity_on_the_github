@@ -144,9 +144,9 @@ function rands(){
 }
 
 let filter_flags = [];
-function filterChange(id){
+function filterChange(id=-1){
     //TODO Фильтрация по кнопкам, а не по чекбоксам 1
-    if(id) {
+    if(id !== -1) {
         let button = $('#' + id);
         if (button.hasClass('w3-white')) {
             button.removeClass('w3-white').addClass('black');
