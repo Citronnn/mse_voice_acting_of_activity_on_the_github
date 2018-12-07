@@ -24,11 +24,10 @@ let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66
     "#999900"];
 
 let isLight = true;
-
-let pushOnly = false;
-let pullOnly = false;
-
 let infoCount = 0;
+
+let scrolledDown = false;
+
 window.onunload = function(){
     saveStateInCookies();
 }
@@ -36,6 +35,11 @@ window.onunload = function(){
 $(document).ready(function () {
     getStateFromCookies();
     //filterChange();
+
+    $('#eventfield').scroll(function(){
+        scrolledDown = $(this).scrollTop() >= $('#eventfield')[0].scrollHeight - $('#eventfield').height();
+    });
+
     $('#changecolors').click(function () {
         if(isLight) {
             $('body').css('background-color','#292929');
@@ -120,30 +124,6 @@ function rands(){
     return rands_array;
 }
 
-function filter_push() {
-    $("#eventfield").empty();
-    infoCount=0;
-    if(pushOnly)
-        pushOnly = false;
-    else
-    {
-        pullOnly = false;
-        pushOnly = true;
-    }
-}
-
-function filter_pull() {
-    $("#eventfield").empty();
-    infoCount=0;
-    if(pullOnly)
-        pullOnly = false;
-    else
-    {
-        pushOnly = false;
-        pullOnly = true;
-    }
-}
-
 let filter_flags = [];
 function filterChange(){
     filter_flags=[];
@@ -179,7 +159,8 @@ function add_event(type, jsinfo) {
     let date_string = year + '-' + month + '-' + day + '  ' + hours + ':' + minutes + ':' + seconds + ' - ';
     $("#eventfield").append(`<div id="one_event">${date_string}${jsinfo["type"]} - <a href="${jsinfo["url"]}" 
     target="_blank">${jsinfo["owner"]} / ${jsinfo["repo"]}</div>`);
-    $("#eventfield").scrollTop($("#eventfield")[0].scrollHeight);
+    if (scrolledDown)
+        $("#eventfield").scrollTop($("#eventfield")[0].scrollHeight);
     createFig(type, jsinfo);
 }
 
