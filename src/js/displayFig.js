@@ -165,7 +165,6 @@ function filterChange(id=-1){
                     filter_json[button.val()] = isLight;
             }
         }
-        console.log(filter_json);
         filterChoose(filter_json);
     }
 
@@ -187,8 +186,6 @@ function use_all_filters_flags() {
             filter_json[button.val()] = true;
         }
     }
-
-    console.log(filter_json);
     filterChoose(filter_json);
 
 }
