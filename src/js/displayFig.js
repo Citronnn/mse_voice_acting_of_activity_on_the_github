@@ -34,7 +34,7 @@ window.onunload = function(){
 
 $(document).ready(function () {
     getStateFromCookies();
-    //filterChange();
+    filterChange();
 
     $('#eventfield').scroll(function(){
         scrolledDown = $(this).scrollTop() >= $('#eventfield')[0].scrollHeight - $('#eventfield').height();
