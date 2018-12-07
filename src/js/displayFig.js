@@ -1,4 +1,5 @@
-const time_of_life = 150;
+const max_count_of_figures = 20;
+const animation_time = 2000;
 const audio_size = 67;
 
 let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66","#FFCC00","#FFCC33",
@@ -28,10 +29,13 @@ let pushOnly = false;
 let pullOnly = false;
 
 let infoCount = 0;
-
+window.onunload = function(){
+    saveStateInCookies();
+}
 
 $(document).ready(function () {
-    filterChange();
+    getStateFromCookies();
+    //filterChange();
     $('#changecolors').click(function () {
         if(isLight) {
             $('body').css('background-color','#292929');
@@ -67,19 +71,15 @@ setInterval(function(){
 },0);
 let id=0;
 
+
 function createFig(type,info) {
     let rand_array = rands();
 
     playSound(rand_array[4], $('#volinp').val()/100);
 
     let idl=id++;
-    if(id === 1000)
-        id=0;
     let br = 0;
     let rot = 0;
-    let back_fig_anim_time = 2000;
-    if(time_of_life < 50)
-        back_fig_anim_time=40*time_of_life;
     if(type === 0){
         br = rand_array[2]/2;
     }
@@ -100,19 +100,13 @@ function createFig(type,info) {
         "border-radius":"+50px",
         "height":"+=50px",
         "opacity":"0"
-    },back_fig_anim_time);
-    setTimeout(()=>{$("#displaydiv  div:last").remove();},2000);
-    setTimeout(function(){
-        if(time_of_life >= 200) {
-            $(`#${idl}`).animate({"opacity": "0"}, 1000);
-            setTimeout(() => {
-                $(`#${idl}`).remove()
-            }, 1000);
-        }
-        else
-            $(`#${idl}`).remove();
-    },40*time_of_life);
-
+    },animation_time);
+    let id_to_remove = idl - max_count_of_figures;
+    setTimeout(()=>{$("#displaydiv  div:last").remove();},animation_time);
+    $(`#${id_to_remove}`).animate({"opacity": "0"}, animation_time);
+    setTimeout(() => {
+        $(`#${id_to_remove}`).remove()
+    }, animation_time);
 }
 
 
@@ -193,7 +187,18 @@ function infoonFig(info) {
     let type = Math.floor(Math.random() * (3));
    // $("#back_figure").remove();
     let jsinfo = JSON.parse(info);
-    if(filter_flags.indexOf(`${jsinfo['type']}`) > -1) {
+    if(jsinfo['type']==='error'){
+        if(jsinfo['where'][0].length === 3){
+            document.getElementById('organization').classList.add('error_filter_org');
+            document.getElementById('repos').classList.add('error_filter_org');
+        }
+        else if(jsinfo['where'] === 'org'){
+            document.getElementById('organization').classList.add('error_filter_org');
+        }
+        else
+            document.getElementById('repos').classList.add('error_filter_org');
+    }
+    else if(filter_flags.indexOf(`${jsinfo['type']}`) > -1) {
         if (infoCount <= 50) {
             add_event(type, jsinfo);
             infoCount++;
@@ -220,4 +225,127 @@ function playSound(index, volume) {
         a.play();
         cached_sounds[file] = a;
     }
+}
+
+function setCookie(name,value,days = 1) {
+    let expires = '';
+    if (days) {
+        let date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = '; expires='+ date.toUTCString();
+    }
+    document.cookie = name + '=' + value + expires + '; path=/';
+}
+
+function getCookie(name) {
+    let nameEQ = name + '=';
+    let ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0)=== ' '){
+            c = c.substring(1, c.length);
+        }
+        if (c.indexOf(nameEQ) === 0) {
+            return c.substring(nameEQ.length, c.length);
+        }
+    }
+    return null;
+}
+
+function  deleteCookie(name) {
+    setCookie(name, '', -1);
+}
+
+
+
+function saveStateInCookies() {
+    alert("Prevet")
+    setCookie("isLight", isLight);
+    setCookie("volume", $("#volinp").val());
+    let tmp_mass =  $("input:checkbox");
+
+    for ( let key in tmp_mass){
+        setCookie(tmp_mass[key].id, tmp_mass[key].checked);
+    }
+}
+
+function getStateFromCookies() {
+
+
+    let isL = getCookie("isLight");
+    let vol = getCookie('volume');
+    let tmp_mass = $("input:checkbox");
+
+    if(isL == "false") {
+        $('body').css('background-color','#292929');
+        $('#displaydiv').css('background-color','#363535');
+        $('#VA').css('color', '#ffffff');
+        $('#IE').css('color', '#ffffff');
+        $('#bar').css('color', '#ffffff');
+        $('#changecolors').html("Go to Light");
+        $('#back_figure').css('background-color','#87918F');
+        $('#changecolors').removeClass('w3-black').addClass('w3-white');
+        $('#eventfield').css('color', '#ffffff');
+        isLight = false;
+    }
+    else{
+        $('body').css('background-color','white');
+        $('#displaydiv').css('background-color', '#e8e8e7');
+        $('#back_figure').css('background-color','#F5F5DC');
+        $('#VA').css('color', '#000000');
+        $('#IE').css('color', '#000000');
+        $('#bar').css('color', '#000000');
+        $('#changecolors').html("Go to Dark");
+        $('#changecolors').removeClass('w3-white').addClass('w3-black');
+        $('#eventfield').css('color', '#000000');
+        isLight = true;
+    }
+
+    let numVol = Number(vol) >= 0;
+
+    if(vol !== undefined && numVol >= 0 && numVol<=100 ) {
+        $("#volinp").val(vol);
+    }
+    else{
+        removeCookiesWithSettings();
+        return;
+    }
+
+    let checkCounter = 0;
+    for ( let key in tmp_mass){
+        let state = getCookie(tmp_mass[key].id+"");
+        if (tmp_mass[key].id == 1 && state == "true" ) {
+            $('.filterMain').prop('checked', true);
+            $('.filtercheck').prop('checked', true);
+            checkCounter++;
+            break;
+        }
+
+        if(state !== undefined ){
+            if (state == "true") {
+                $("#" + tmp_mass[key].id).prop('checked', true);
+                checkCounter++;
+            }
+            else{
+                $("#" + tmp_mass[key].id).prop('checked', false);
+            }
+        }
+    }
+
+    if(checkCounter == 0) {
+        removeCookiesWithSettings();
+    }
+}
+
+function removeCookiesWithSettings() {
+    deleteCookie("isLight");
+    deleteCookie('volume');
+    let tmp_mass = $("input:checkbox");
+
+    for (let key in tmp_mass) {
+        deleteCookie(tmp_mass[key].id + "");
+    }
+
+    $("#volinp").val(20);
+    $("#2").prop('checked', true);
 }
