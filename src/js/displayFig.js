@@ -1,6 +1,5 @@
 const max_count_of_figures = 20;
 const animation_time = 2000;
-const audio_size = 67;
 
 let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66","#FFCC00","#FFCC33",
     "#CC9933","#996600","#FF9900","#FF9933","#CC9966","#CC6600","#FFCC99","#FF9966","#FF6600",

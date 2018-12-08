@@ -1,3 +1,4 @@
+from os import listdir
 from bottle import route, run, static_file, template
 from github3 import GitHub
 from github3.events import Event
@@ -481,6 +482,14 @@ class Server:
             client.send(message)
 
 
+def count_audio_files() -> int:
+    files = 0
+    for file in listdir('audio'):
+        if file.endswith('.mp3'):
+            files += 1
+    return files
+
+
 if __name__ == '__main__':
 
     server = Server()
@@ -489,9 +498,11 @@ if __name__ == '__main__':
     Thread(target=handle_events, name="Handle events").start()
     Thread(target=send_events, name="Send events").start()
 
+    audio_files = count_audio_files()
+
     @route('/')
     def index():
-        return template('frontend.html', ip=Server.ip, port=Server.port)
+        return template('frontend.html', ip=Server.ip, port=Server.port, audio_size=audio_files)
 
     @route('/<file:path>')
     def static_serve(file):
