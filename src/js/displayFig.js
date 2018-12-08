@@ -32,6 +32,7 @@ window.onunload = function(){
 }
 
 $(document).ready(function () {
+    alert(document.cookie)
     getStateFromCookies();
     filterChange();
 
@@ -306,7 +307,9 @@ function saveStateInCookies() {
     let tmp_mass =  $("input:image");
 
     for ( let key in tmp_mass){
-        setCookie(tmp_mass[key].id, tmp_mass[key].checked);
+        let black = $( "#"+tmp_mass[key].id ).hasClass( "black" );
+        let checked = isLight && black
+        setCookie(tmp_mass[key].id, checked);
     }
 }
 
@@ -348,23 +351,27 @@ function getStateFromCookies() {
         $("#volinp").val(vol);
     }
     else{
-        removeCookiesWithSettings();
-        return;
+        alert("else")
+      //  removeCookiesWithSettings();
+      //  return;
     }
 
     let checkCounter = 0;
+    filterChange('1');
     for ( let key in tmp_mass){
         let state = getCookie(tmp_mass[key].id+"");
-        if (tmp_mass[key].id == 1 && state == "true" ) {
-            $('.filterMain').prop('checked', true);
-            $('.filtercheck').prop('checked', true);
+        if (tmp_mass[key].id == "filt_0" && state == "true" ) {
+            use_all_filters_flags();
             checkCounter++;
             break;
         }
 
         if(state !== undefined ){
             if (state == "true") {
-                $("#" + tmp_mass[key].id).prop('checked', true);
+                alert(tmp_mass[key].id[5])
+               // let black = $( "#"+tmp_mass[key].id ).hasClass( "black" );
+                filterChange(tmp_mass[key].id[5])
+                //$("#" + tmp_mass[key].id).prop('checked', true);
                 checkCounter++;
             }
             else{
@@ -374,6 +381,7 @@ function getStateFromCookies() {
     }
 
     if(checkCounter == 0) {
+        alert("else2")
         removeCookiesWithSettings();
     }
 }
