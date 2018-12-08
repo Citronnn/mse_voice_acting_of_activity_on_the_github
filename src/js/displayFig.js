@@ -50,16 +50,6 @@ $(document).ready(function () {
             $('#back_figure').css('background-color','#87918F');
             $('#changecolors').removeClass('w3-black').addClass('w3-white');
             $('#eventfield').css('color', '#ffffff');
-
-
-            for (let i=1; i<12; i++){
-                let button = $('#' + i);
-                if (button.hasClass('w3-white'))
-                    button.removeClass('w3-white').addClass('black');
-                else
-                    button.removeClass('black').addClass('w3-white');
-            }
-
             isLight = false;
         }
         else{
@@ -73,15 +63,14 @@ $(document).ready(function () {
             $('#changecolors').removeClass('w3-white').addClass('w3-black');
             $('#eventfield').css('color', '#000000');
 
-            for (let i=1; i<12; i++){
-                let button = $('#' + i);
-                if (button.hasClass('w3-white'))
-                    button.removeClass('w3-white').addClass('black');
-                else
-                    button.removeClass('black').addClass('w3-white');
-            }
-
             isLight = true;
+        }
+        for (let i=0; i<11; i++){
+            let button = $('#filt_' + i);
+            if (button.hasClass('w3-white'))
+                button.removeClass('w3-white').addClass('black');
+            else
+                button.removeClass('black').addClass('w3-white');
         }
     });
 });
@@ -144,7 +133,8 @@ function rands(){
 
 let filter_flags = [];
 function filterChange(id){
-    let button = $('#' + id);
+    filter_flags=[];
+    let button = $('#filt_' + id);
     if (button.hasClass('w3-white')) {
         button.removeClass('w3-white').addClass('black');
     }
@@ -154,27 +144,59 @@ function filterChange(id){
 
     let filter_json = {type: 'filter'};
     for (let i = 1; i <= 9; i++) {
-        let button = $('#' + i);
+        let button = $('#filt_' + i);
         if (button.hasClass('w3-white'))
             filter_json[button.val()] = !isLight;
         else
             filter_json[button.val()] = isLight;
+        if(filter_json[button.val()]===true) {
+            filter_flags.push(button.val());
+        }
+    }
+    button = $('#filt_0');
+    if(filter_flags.length===9) {
+        button = $('#filt_0');
+        if (button.hasClass('w3-white') && isLight) {
+            button.removeClass('w3-white').addClass('black');
+        }
+        else if (button.hasClass('black') )
+            button.removeClass('black').addClass('w3-white');
+    }
+    else if (filter_flags.length!==9){
+        if(button.hasClass('w3-white') && !isLight){
+            button.removeClass('w3-white').addClass('black');
+        }
+        else if(button.hasClass('black') && isLight)
+            button.removeClass('black').addClass('w3-white');
     }
     filterChoose(filter_json);
 }
 
 function use_all_filters_flags() {
-    let button = $('.filterMain');
-    if (button.hasClass('w3-white')) {
-        button.removeClass('w3-white').addClass('black');
-    }
-    else {
-        button.removeClass('black').addClass('w3-white');
-    }
-
     let filter_json = {type:'filter'};
+    filter_flags=[];
+    if($('#filt_0').hasClass('w3-white')){
+        $('#filt_0').removeClass('w3-white').addClass('black');
+    }
+    else if($('#filt_0').hasClass('black'))
+        $('#filt_0').removeClass('black').addClass('w3-white');
     for (let i = 1; i <= 9; i++){
-        let button = $('#' + i);
+        let button = $('#filt_' + i);
+        if($('#filt_0').hasClass('w3-white')!==isLight) {
+            filter_flags.push(button.val());
+            if (button.hasClass('w3-white') && !isLight) {
+                button.removeClass('w3-white').addClass('black');
+            }
+            else if (button.hasClass('black') && isLight) {
+                button.removeClass('black').addClass('w3-white');
+            }
+        }
+        if (button.hasClass('w3-white')) {
+            button.removeClass('w3-white').addClass('black');
+        }
+        else {
+            button.removeClass('black').addClass('w3-white');
+        }
         filter_json[button.val()] = true;
     }
     filterChoose(filter_json);
@@ -203,7 +225,9 @@ function add_event(type, jsinfo) {
 function infoonFig(info) {
     let type = Math.floor(Math.random() * (3));
    // $("#back_figure").remove();
+   // alert(info +' '+ filter_flags);
     let jsinfo = JSON.parse(info);
+
     if(jsinfo['type']==='error'){
         if(jsinfo['where'][0].length === 3){
             document.getElementById('organization').classList.add('error_filter_org');
