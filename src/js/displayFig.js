@@ -32,7 +32,6 @@ window.onunload = function(){
 }
 
 $(document).ready(function () {
-    alert(document.cookie)
     getStateFromCookies();
    // filterChange();
 
@@ -396,7 +395,6 @@ function getStateFromCookies() {
 
         if(state !== undefined ){
             if (state == "true") {
-                alert(tmp_mass[key].id[5])
                // let black = $( "#"+tmp_mass[key].id ).hasClass( "black" );
                 filterChange(tmp_mass[key].id[5])
                 //$("#" + tmp_mass[key].id).prop('checked', true);
