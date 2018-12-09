@@ -33,10 +33,9 @@ window.onunload = function(){
 
 $(document).ready(function () {
     getStateFromCookies();
-   // filterChange();
-
+    let for_comfort_scroll = 60;
     $('#eventfield').scroll(function(){
-        scrolledDown = $(this).scrollTop() >= $('#eventfield')[0].scrollHeight - $('#eventfield').height();
+        scrolledDown = $(this).scrollTop() >= $('#eventfield')[0].scrollHeight - $('#eventfield').height() - for_comfort_scroll;
     });
 
     $('#changecolors').click(function () {
@@ -374,6 +373,7 @@ function getStateFromCookies() {
         $("#repos").val(repos);
     }
     let checkCounter = 0;
+  
     filterChange('1');
 
     if(getCookie("filt_0") == "true") {
