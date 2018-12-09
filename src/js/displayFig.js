@@ -35,9 +35,9 @@ $(document).ready(function () {
     alert(document.cookie)
     getStateFromCookies();
     filterChange();
-
+    let for_comfort_scroll = 60;
     $('#eventfield').scroll(function(){
-        scrolledDown = $(this).scrollTop() >= $('#eventfield')[0].scrollHeight - $('#eventfield').height();
+        scrolledDown = $(this).scrollTop() >= $('#eventfield')[0].scrollHeight - $('#eventfield').height() - for_comfort_scroll;
     });
 
     $('#changecolors').click(function () {
