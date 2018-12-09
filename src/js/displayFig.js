@@ -33,7 +33,6 @@ window.onunload = function(){
 
 $(document).ready(function () {
     getStateFromCookies();
-    filterChange();
     let for_comfort_scroll = 60;
     $('#eventfield').scroll(function(){
         scrolledDown = $(this).scrollTop() >= $('#eventfield')[0].scrollHeight - $('#eventfield').height() - for_comfort_scroll;
@@ -300,13 +299,18 @@ function  deleteCookie(name) {
 
 
 function saveStateInCookies() {
-    alert("Prevet")
     setCookie("isLight", isLight);
     setCookie("volume", $("#volinp").val());
+    setCookie("organization", $("#organization").val());
+    setCookie("repos", $("#repos").val());
     let tmp_mass =  $("input:image");
 
     for ( let key in tmp_mass){
-        setCookie(tmp_mass[key].id, tmp_mass[key].checked);
+        let black = $( "#"+tmp_mass[key].id ).hasClass( "black" );
+        let white = $( "#"+tmp_mass[key].id ).hasClass( "w3-white" );
+        let checked = isLight ? black : white;
+
+        setCookie(tmp_mass[key].id, checked);
     }
 }
 
@@ -315,6 +319,8 @@ function getStateFromCookies() {
 
     let isL = getCookie("isLight");
     let vol = getCookie('volume');
+    let organization = getCookie('organization');
+    let repos = getCookie('repos');
     let tmp_mass = $("input:image");
 
     if(isL == "false") {
@@ -328,6 +334,13 @@ function getStateFromCookies() {
         $('#changecolors').removeClass('w3-black').addClass('w3-white');
         $('#eventfield').css('color', '#ffffff');
         isLight = false;
+        for (let i=0; i<11; i++){
+            let button = $('#filt_' + i);
+            if (button.hasClass('w3-white'))
+                button.removeClass('w3-white').addClass('black');
+            else
+                button.removeClass('black').addClass('w3-white');
+        }
     }
     else{
         $('body').css('background-color','white');
@@ -339,32 +352,52 @@ function getStateFromCookies() {
         $('#changecolors').html("Go to Dark");
         $('#changecolors').removeClass('w3-white').addClass('w3-black');
         $('#eventfield').css('color', '#000000');
+
         isLight = true;
     }
+
 
     let numVol = Number(vol) >= 0;
 
     if(vol !== undefined && numVol >= 0 && numVol<=100 ) {
         $("#volinp").val(vol);
     }
+
     else{
         removeCookiesWithSettings();
         return;
     }
 
+    if(organization !== undefined && repos !== undefined) {
+        $("#organization").val(organization);
+        $("#repos").val(repos);
+    }
     let checkCounter = 0;
+  
+    filterChange('1');
+
+    if(getCookie("filt_0") == "true") {
+
+        use_all_filters_flags();
+
+        if (isL == "true") {
+            $('#filt_0').removeClass('w3-white').addClass('black');
+        }
+        else {
+            $('#filt_0').removeClass('black').addClass('w3-white');
+        }
+        return;
+    }
+
+
     for ( let key in tmp_mass){
         let state = getCookie(tmp_mass[key].id+"");
-        if (tmp_mass[key].id == 1 && state == "true" ) {
-            $('.filterMain').prop('checked', true);
-            $('.filtercheck').prop('checked', true);
-            checkCounter++;
-            break;
-        }
 
         if(state !== undefined ){
             if (state == "true") {
-                $("#" + tmp_mass[key].id).prop('checked', true);
+               // let black = $( "#"+tmp_mass[key].id ).hasClass( "black" );
+                filterChange(tmp_mass[key].id[5])
+                //$("#" + tmp_mass[key].id).prop('checked', true);
                 checkCounter++;
             }
             else{
@@ -374,13 +407,18 @@ function getStateFromCookies() {
     }
 
     if(checkCounter == 0) {
-        removeCookiesWithSettings();
+        filterChange('1');
+        removeCookiesWithSettings()
     }
+
+
 }
 
 function removeCookiesWithSettings() {
     deleteCookie("isLight");
     deleteCookie('volume');
+    deleteCookie('organization');
+    deleteCookie('repos');
     let tmp_mass = $("input:image");
 
     for (let key in tmp_mass) {
