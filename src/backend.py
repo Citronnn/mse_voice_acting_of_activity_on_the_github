@@ -341,12 +341,12 @@ def send_events():
         for send_item in list_to_send_now:
             # print('send', send_item['time'])
             del send_item['time']
-            server.broadcast(send_item)
+            websocket_server.broadcast(send_item)
 
         sleep(0.01)
 
 
-class Debug:
+class DebugLog:
     Debug = 1
     Send = 0
     Connected = 1
@@ -401,30 +401,30 @@ class VisualGithubClient:
         try:
             self.handler.finish()
         except KeyError:
-            Debug.error(f'Key error possibly double '
+            DebugLog.error(f'Key error possibly double '
                         f'deleting id = {self.id}')
 
     def send(self, obj: dict) -> None:
         try:
             msg = dumps(obj)
-            Debug.send(f'Send to {self.id}: {"{ JSON event }"}')
+            DebugLog.send(f'Send to {self.id}: {"{ JSON event }"}')
             self.handler.send_message(msg)
         except BrokenPipeError:
-            Debug.error(f'Broken pipe error send id = {self.id}')
+            DebugLog.error(f'Broken pipe error send id = {self.id}')
 
-    def receive(self, srv: 'Server', message: str, client: dict):
+    def receive(self, srv: 'WebSocketServer', message: str, client: dict):
         print(message)
         print("Ok")
         # Действия
 
-    def left(self, srv: 'Server') -> None:
+    def left(self, srv: 'WebSocketServer') -> None:
         del srv.clients[self.id]
         # Debug.client_left('DEL VISUAL GITHUB', self.id)
 
 
-class Server:
+class WebSocketServer:
 
-    if Debug.Debug:
+    if DebugLog.Debug:
         ip = '127.0.0.1'
         local_ip = '127.0.0.1'
 
@@ -436,7 +436,7 @@ class Server:
 
     def __init__(self):
 
-        self.server = WebsocketServer(Server.port, Server.local_ip)
+        self.server = WebsocketServer(WebSocketServer.port, WebSocketServer.local_ip)
         self.server.set_fn_new_client(self.new_client)
         self.server.set_fn_client_left(self.client_left)
         self.server.set_fn_message_received(self.message_received)
@@ -448,7 +448,7 @@ class Server:
 
     # Called for every client connecting (after handshake)
     def new_client(self, client, _):
-        Debug.connected(f'New client connected '
+        DebugLog.connected(f'New client connected '
                         f'and was given id {client["id"]}')
         new_client = VisualGithubClient(client['id'], client['handler'])
         client['client'] = new_client
@@ -460,14 +460,14 @@ class Server:
         if client is None:
             return
 
-        Debug.client_left(f'Client {client["id"]} disconnected')
+        DebugLog.client_left(f'Client {client["id"]} disconnected')
         try:
             client['client'].left(self)
         except KeyError:
-            Debug.error(f'Key error possibly double deleting '
+            DebugLog.error(f'Key error possibly double deleting '
                         f'in client left id = {client["id"]}')
         except ValueError:
-            Debug.error(f'Value error possibly double deleting '
+            DebugLog.error(f'Value error possibly double deleting '
                         f'in client left id = {client["id"]}')
 
     # Called when a client sends a message
@@ -492,8 +492,8 @@ def get_audio_files():
 
 if __name__ == '__main__':
 
-    server = Server()
-    Thread(target=lambda: server.run(), name='WebSocket server').start()
+    websocket_server = WebSocketServer()
+    Thread(target=lambda: websocket_server.run(), name='WebSocket server').start()
     Thread(target=download_events, name="Download events").start()
     Thread(target=handle_events, name="Handle events").start()
     Thread(target=send_events, name="Send events").start()
@@ -502,7 +502,7 @@ if __name__ == '__main__':
 
     @route('/')
     def index():
-        return template('frontend.html', ip=Server.ip, port=Server.port, audio_size=len(audio_files))
+        return template('frontend.html', ip=WebSocketServer.ip, port=WebSocketServer.port, audio_size=len(audio_files))
 
     @route('/<file:path>')
     def static_serve(file: str):
@@ -513,4 +513,4 @@ if __name__ == '__main__':
 
         return static_file(file, root='.')
 
-    run(host=Server.local_ip, port=80)
+    run(host=WebSocketServer.local_ip, port=80)
