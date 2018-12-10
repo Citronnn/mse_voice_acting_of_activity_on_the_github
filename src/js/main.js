@@ -352,7 +352,7 @@ function WebSocketInit() {
 
     ws.onmessage = function (evt) {
         var received_msg = evt.data;
-        console.log(received_msg);
+        // console.log(received_msg);
         infoonFig(received_msg);
     };
 
