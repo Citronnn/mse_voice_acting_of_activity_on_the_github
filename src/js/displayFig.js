@@ -374,10 +374,9 @@ function getStateFromCookies() {
     }
     let checkCounter = 0;
   
-    filterChange('1');
+
 
     if(getCookie("filt_0") == "true") {
-
         use_all_filters_flags();
 
         if (isL == "true") {
@@ -389,15 +388,15 @@ function getStateFromCookies() {
         return;
     }
 
-
     for ( let key in tmp_mass){
         let state = getCookie(tmp_mass[key].id+"");
 
         if(state !== undefined ){
-            if (state == "true") {
-               // let black = $( "#"+tmp_mass[key].id ).hasClass( "black" );
-                filterChange(tmp_mass[key].id[5])
-                //$("#" + tmp_mass[key].id).prop('checked', true);
+            if (state == "true" ) {
+                filterChange(tmp_mass[key].id[5]);
+                if(tmp_mass[key].id[5] == "1") {
+                    filterChange(tmp_mass[key].id[5]);
+                }
                 checkCounter++;
             }
             else{
@@ -407,11 +406,9 @@ function getStateFromCookies() {
     }
 
     if(checkCounter == 0) {
-        filterChange('1');
+        filterChange();
         removeCookiesWithSettings()
     }
-
-
 }
 
 function removeCookiesWithSettings() {
