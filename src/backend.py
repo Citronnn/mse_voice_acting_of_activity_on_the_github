@@ -482,11 +482,11 @@ class Server:
             client.send(message)
 
 
-def count_audio_files() -> int:
-    files = 0
+def get_audio_files():
+    files = []
     for file in listdir('audio'):
         if file.endswith('.mp3'):
-            files += 1
+            files += ['audio/' + file]
     return files
 
 
@@ -498,14 +498,19 @@ if __name__ == '__main__':
     Thread(target=handle_events, name="Handle events").start()
     Thread(target=send_events, name="Send events").start()
 
-    audio_files = count_audio_files()
+    audio_files = get_audio_files()
 
     @route('/')
     def index():
-        return template('frontend.html', ip=Server.ip, port=Server.port, audio_size=audio_files)
+        return template('frontend.html', ip=Server.ip, port=Server.port, audio_size=len(audio_files))
 
     @route('/<file:path>')
-    def static_serve(file):
+    def static_serve(file: str):
+        if file.endswith('.mp3'):
+            filename = file.split('/')[-1]  # without path
+            file_num = filename.split('.')[0]  # without ".mp3"
+            file = audio_files[int(file_num)]
+
         return static_file(file, root='.')
 
     run(host=Server.local_ip, port=80)
