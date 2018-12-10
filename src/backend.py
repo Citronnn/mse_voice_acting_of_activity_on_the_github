@@ -17,7 +17,8 @@ from pprint import pprint
 
 event_queue: List[Event] = []
 list_to_send: List[dict] = []
-lock: Lock = Lock()
+events_to_send_lock: Lock = Lock()
+event_queue_lock: Lock = Lock()
 
 
 def get_current_time(git_time) -> datetime:
@@ -51,7 +52,8 @@ def download_events():
                     break
             if len(new_events):
                 last_event = new_events[0]
-            event_queue[0:0] = new_events
+            with event_queue_lock:
+                event_queue[0:0] = new_events
         except ServerError:
             print("Server error occurred")
         except ConnectionError:
@@ -59,18 +61,19 @@ def download_events():
         except ConnectionAbortedError:
             print("Connection aborted error occurred")
 
-        if len(event_queue):
-            pushes = sum(event.type == "PushEvent" for event in event_queue)
-            print(f'{event_queue[-1].created_at.time()}-'
-                  f'{event_queue[0].created_at.time()}, '
-                  f'events: {len(event_queue)}, '
-                  f'pushes: {pushes}')
+        with event_queue_lock:
+            if len(event_queue):
+                pushes = sum(event.type == "PushEvent" for event in event_queue)
+                print(f'{event_queue[-1].created_at.time()}-'
+                      f'{event_queue[0].created_at.time()}, '
+                      f'events: {len(event_queue)}, '
+                      f'pushes: {pushes}')
 
         sleep(10)
 
 
 def handle_events():
-    global event_queue, list_to_send, lock
+    global event_queue, list_to_send, events_to_send_lock
 
     print('Handle events started')
 
@@ -79,7 +82,8 @@ def handle_events():
             sleep(1)
             continue
 
-        event: Event = event_queue.pop()
+        with event_queue_lock:
+            event: Event = event_queue.pop()
 
         try:
 
@@ -95,7 +99,7 @@ def handle_events():
                 commit_hash = event.payload['commits'][-1]['sha']
                 url = f'https://github.com/{repo_name}/commit/{commit_hash}'
 
-                with lock:
+                with events_to_send_lock:
                     list_to_send += [
                         {
                             'type': 'push',
@@ -122,7 +126,7 @@ def handle_events():
                 full_name_repo = event['repo']['name']
                 owner, repo = split_repo_name(full_name_repo)
 
-                with lock:
+                with events_to_send_lock:
                     list_to_send += [
                         {
                             'type': 'pull_request',
@@ -148,7 +152,7 @@ def handle_events():
                 full_name_repo = event['repo']['name']
                 owner, repo = split_repo_name(full_name_repo)
 
-                with lock:
+                with events_to_send_lock:
                     list_to_send += [
                         {
                             'type': 'create_repo',
@@ -168,7 +172,7 @@ def handle_events():
                 full_name_repo = event['payload']['forkee']['full_name']
                 owner, repo = split_repo_name(full_name_repo)
 
-                with lock:
+                with events_to_send_lock:
                     list_to_send += [
                         {
                             'type': 'fork_repo',
@@ -189,7 +193,7 @@ def handle_events():
                 url = event['payload']['issue']['html_url']
                 owner, repo = split_repo_name(event['repo']['name'])
 
-                with lock:
+                with events_to_send_lock:
                     list_to_send += [
                         {
                             'type': 'issue',
@@ -210,7 +214,7 @@ def handle_events():
                 owner, repo = split_repo_name(event['repo']['name'])
                 url = event['payload']['comment']['html_url']
 
-                with lock:
+                with events_to_send_lock:
                     list_to_send += [
                         {
                             'type': 'issue_comment',
@@ -228,7 +232,7 @@ def handle_events():
                 owner, repo = split_repo_name(event['repo']['name'])
                 url = event['payload']['comment']['html_url']
 
-                with lock:
+                with events_to_send_lock:
                     list_to_send += [
                         {
                             'type': 'pull_request_review',
@@ -250,7 +254,7 @@ def handle_events():
 
                 url = event['payload']['pages'][-1]['html_url']
 
-                with lock:
+                with events_to_send_lock:
                     list_to_send += [
                         {
                             'type': 'wiki_page',
@@ -268,7 +272,7 @@ def handle_events():
                 owner, repo = split_repo_name(event['repo']['name'])
                 url = event['payload']['release']['html_url']
 
-                with lock:
+                with events_to_send_lock:
                     list_to_send += [
                         {
                             'type': 'release',
@@ -289,7 +293,7 @@ def handle_events():
                 owner, repo = split_repo_name(event['repo']['name'])
                 url = event['payload']['comment']['html_url']
 
-                with lock:
+                with events_to_send_lock:
                     list_to_send += [
                         {
                             'type': 'commit_comment',
@@ -334,7 +338,7 @@ def send_events():
 
         now = datetime.now()
 
-        with lock:
+        with events_to_send_lock:
             list_to_send_now = [i for i in list_to_send if i['time'] < now]
             list_to_send = [i for i in list_to_send if i['time'] >= now]
 
