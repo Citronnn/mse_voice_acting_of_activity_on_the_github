@@ -252,7 +252,7 @@ function infoonFig(info) {
 let cached_sounds = {};
 
 function playSound(index, volume) {
-    let file = "audio/" + (index+1) + ".mp3";
+    let file = "audio/" + index + ".mp3";
     if(file in cached_sounds){
         cached_sounds[file].volume(volume);
         cached_sounds[file].play();
