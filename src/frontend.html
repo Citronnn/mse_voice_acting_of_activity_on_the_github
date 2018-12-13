@@ -39,7 +39,7 @@
         <div class="w3-container">
             <div class="w3-display-container" style="height: 55px">
                 <div id="VA" class="w3-display-left" style="font-size: x-large; margin-left:1%">Visual activity on GitHub</div>
-                <button class="w3-display-right w3-btn w3-black" id ="changecolors">Go to Dark</button>
+                <button class="w3-display-right w3-btn w3-black" onclick="changecolrs()" id ="changecolors">Go to Dark</button>
                 <div id="bar" class="w3-display-middle" style="margin-left: 38%">Volume: <label><input id="volinp" type="range" min="0" max="100" step="1" value="20"></label></div>
                 <div class="w3-display-right" style="margin-right: 1%">
                     <button class="w3-display-right w3-btn w3-green" onclick="document.getElementById('id01').style.display='block'">About</button>
@@ -61,11 +61,11 @@
        <!-- <button class="w3-btn w3-green w3-margin-bottom" id="pushOnly" onclick="filter_push()">Switch Pushes only</button>
         <button class="w3-btn w3-green w3-margin-bottom" id="pullOnly" onclick="filter_pull()">Swith Pull requests only</button>  -->
         <div>
-            <p>Organization and repo</p>
-            <input id="organization" type="text"
+            <p id="OR" style="font-size: x-large">Special Organization and/or Repository</p>
+            <input class="w3-padding-small w3-round-large" placeholder="user or organization" id="organization" type="text"
                    onfocus="document.getElementById('organization').classList.remove('error_filter_org');"
                    onblur="orgChoose();">
-            / <input id="repos"
+            <b id="slash">/</b> <input class="w3-padding-small w3-round-large" placeholder="repository" id="repos"
                      onfocus="document.getElementById('repos').classList.remove('error_filter_org');"
                      onblur="orgChoose()">
         </div>
