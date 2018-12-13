@@ -38,9 +38,15 @@
     <div align="center">
         <div class="w3-container">
             <div class="w3-display-container" style="height: 55px">
-                <div id="VA" class="w3-display-left" style="font-size: x-large; margin-left:1%">Visual activity on GitHub</div>
+                <div id="VA" class="w3-display-left" >Visual activity on GitHub</div>
+                <div class="w3-display-right w3-large" id="soundslabel">Sound Pack</div>
+                <select id ="selectsound" class="w3-display-right w3-btn">
+                    <option class="optS" value="bass">Bass Drum</option>
+                    <option class="optS" value="guitar">Guitar</option>
+                    <option class="optS" value="mandolin">Mandolin</option>
+                </select>
                 <button class="w3-display-right w3-btn w3-black" id ="changecolors">Go to Dark</button>
-                <div id="bar" class="w3-display-middle" style="margin-left: 38%">Volume: <label><input id="volinp" type="range" min="0" max="100" step="1" value="20"></label></div>
+                <div id="bar" class="w3-display-middle" >Volume: <label><input id="volinp" type="range" min="0" max="100" step="1" value="20"></label></div>
                 <div class="w3-display-right" style="margin-right: 1%">
                     <button class="w3-display-right w3-btn w3-green" onclick="document.getElementById('id01').style.display='block'">About</button>
                 </div>
