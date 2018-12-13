@@ -9,8 +9,8 @@
 
 }
 #displaydiv{
-    width: 0px;
-    height:0px;
+    width: 96%;
+    height:94vh;
     border:solid 2px;
     background-color: #e8e8e7;
 }
