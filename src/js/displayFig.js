@@ -81,11 +81,10 @@ $(document).ready(function () {
         }
     });
 });
+
 setInterval(function(){
     if($(window).width()>$('#displaydiv').width())
         $('#displaydiv').css('min-width',$(window).width()*0.96);
-    if($(window).height()>$('#displaydiv').height())
-        $('#displaydiv').css('min-height',$(window).height()-55+'px');
 },0);
 let id=0;
 
