@@ -46,6 +46,10 @@ $(document).ready(function () {
             $('#IE').css('color', '#ffffff');
             $('#bar').css('color', '#ffffff');
             $('#changecolors').html("Go to Light");
+            $('#soundslabel').css('color', '#ffffff');
+            $('#selectsound').css('border', '3px solid white');
+            $('#selectsound').css('color', '#ffffff');
+            $('.optS').css('background-color', '#292929');
             $('#back_figure').css('background-color','#87918F');
             $('#changecolors').removeClass('w3-black').addClass('w3-white');
             $('#eventfield').css('color', '#ffffff');
@@ -55,9 +59,13 @@ $(document).ready(function () {
             $('body').css('background-color','white');
             $('#displaydiv').css('background-color', '#e8e8e7');
             $('#back_figure').css('background-color','#F5F5DC');
+            $('#selectsound').css('border', '3px solid black');
+            $('#selectsound').css('color', '#000000');
+            $('.optS').css('background-color', '#ffffff');
             $('#VA').css('color', '#000000');
             $('#IE').css('color', '#000000');
             $('#bar').css('color', '#000000');
+            $('#soundslabel').css('color', '#000000');
             $('#changecolors').html("Go to Dark");
             $('#changecolors').removeClass('w3-white').addClass('w3-black');
             $('#eventfield').css('color', '#000000');
@@ -326,9 +334,13 @@ function getStateFromCookies() {
         $('body').css('background-color','#292929');
         $('#displaydiv').css('background-color','#363535');
         $('#VA').css('color', '#ffffff');
+        $('#selectsound').css('border', '3px solid white');
+        $('#selectsound').css('color', '#ffffff');
+        $('.optS').css('background-color', '#292929');
         $('#IE').css('color', '#ffffff');
         $('#bar').css('color', '#ffffff');
         $('#changecolors').html("Go to Light");
+        $('#soundslabel').css('color', '#ffffff');
         $('#back_figure').css('background-color','#87918F');
         $('#changecolors').removeClass('w3-black').addClass('w3-white');
         $('#eventfield').css('color', '#ffffff');
@@ -347,10 +359,14 @@ function getStateFromCookies() {
         $('#back_figure').css('background-color','#F5F5DC');
         $('#VA').css('color', '#000000');
         $('#IE').css('color', '#000000');
+        $('#soundslabel').css('color', '#000000');
         $('#bar').css('color', '#000000');
         $('#changecolors').html("Go to Dark");
         $('#changecolors').removeClass('w3-white').addClass('w3-black');
         $('#eventfield').css('color', '#000000');
+        $('#selectsound').css('border', '3px solid black');
+        $('#selectsound').css('color', '#000000');
+        $('.optS').css('background-color', '#ffffff');
 
         isLight = true;
     }
