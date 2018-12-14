@@ -52,6 +52,8 @@ $(document).ready(function () {
             $('.optS').css('background-color', '#292929');
             $('#back_figure').css('background-color','#87918F');
             $('#changecolors').removeClass('w3-black').addClass('w3-white');
+            $('#navbar').removeClass('navbar-light').addClass('navbar-dark');
+            $('#navbar').removeClass('bg-light').addClass('bg-dark');
             $('#eventfield').css('color', '#ffffff');
             isLight = false;
         }
@@ -68,6 +70,8 @@ $(document).ready(function () {
             $('#soundslabel').css('color', '#000000');
             $('#changecolors').html("Go to Dark");
             $('#changecolors').removeClass('w3-white').addClass('w3-black');
+            $('#navbar').removeClass('navbar-dark').addClass('navbar-light');
+            $('#navbar').removeClass('bg-dark').addClass('bg-light');
             $('#eventfield').css('color', '#000000');
 
             isLight = true;

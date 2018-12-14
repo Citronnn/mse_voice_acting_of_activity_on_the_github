@@ -5,9 +5,7 @@
     margin-bottom: 10px;
 }
 
-#changecolors{
-    margin-right: 18%;
-}
+
 
 #displaydiv{
     transition: background-color 0.5s ease;
@@ -25,7 +23,6 @@
 
 #bar{
     transition: color 0.5s ease;
-    margin-left: 38%;
 }
 #id01{
     z-index: 3000;
@@ -74,9 +71,5 @@ body{
 }
 
 #selectsound{
-    margin-right:25%;
     border: 3px solid black;
-}
-#soundslabel{
-    margin-right:33%;
 }
