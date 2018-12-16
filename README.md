@@ -13,7 +13,7 @@
 
 Установка необходимых библиотек для Python (необходим Python 3.6 или выше):  
 ```
-sudo pip3 install bottle github3.py websocket-server
+sudo pip3 install bottle github3.py websocket-server selenium
 ```
 
 Для запуска приложения следует перейти в директорию src и запустить backend.py 
