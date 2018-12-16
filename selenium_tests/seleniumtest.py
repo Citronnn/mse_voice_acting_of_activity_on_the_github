@@ -1,6 +1,7 @@
 import time
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
+from sys import platform as _platform
 
 #Проверка кнопки About (открыть,закрыть,открыть,закрыть)
 def test_about(driver):
@@ -106,7 +107,12 @@ def test_refs_eventfield(driver, current_url):
     #time.sleep(1)
 
 if __name__ == '__main__':
-    driver = webdriver.Chrome('./chromedriver.exe')  # Optional argument, if not specified will search path.
+    if _platform == "linux" or _platform == "linux2":
+        driver = webdriver.Chrome('./chromedriverlin')
+    elif _platform == "win32" or _platform == "win64":
+        driver = webdriver.Chrome('./chromedriver.exe')
+    elif _platform == "darwin":
+        driver = webdriver.Chrome('./chromedrivermac')
     driver.get('http://127.0.0.1')
     current_url = driver.current_url
     test_about(driver)
