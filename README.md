@@ -15,8 +15,6 @@
 ```
 sudo pip3 install bottle github3.py websocket-server selenium
 ```
-Для selenium тестов потребуется также sudo pip3 install selenium
-```
 
 Для запуска приложения следует перейти в директорию src и запустить backend.py 
 ```
