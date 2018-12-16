@@ -25,3 +25,9 @@ cd src && sudo python3.6 backend.py
 ```
 127.0.0.1:80
 ```
+
+Для запуска selenium тестов следует перейти в директорию selenium_tests и запустить seleniumtest.py,
+при этом сервер должен быть уже запущен
+```
+cd selenium_tests && sudo python3.6 seleniumtest.py
+```
