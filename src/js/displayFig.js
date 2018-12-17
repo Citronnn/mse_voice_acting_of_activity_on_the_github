@@ -1,5 +1,6 @@
 const max_count_of_figures = 20;
 const animation_time = 2000;
+let animation_flag = true;
 
 let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66","#FFCC00","#FFCC33",
     "#CC9933","#996600","#FF9900","#FF9933","#CC9966","#CC6600","#FFCC99","#FF9966","#FF6600",
@@ -118,20 +119,24 @@ function createFig(type,info) {
         height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
         transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};opacity: 0.9;">
         <p id ="text_figure" style="transform: rotate(${-rot}deg)">${info["repo"]}</p></a>`);
+    let animate_time_with_flag = animation_time;
+    if(!animation_flag){
+        animate_time_with_flag=0;
+    }
     $(`#back_figure`).animate({
         "width": "+=50px",
-        "margin-left":"-25px",
-        "margin-top":"-25px",
-        "border-radius":"+50px",
-        "height":"+=50px",
-        "opacity":"0"
-    },animation_time);
+        "margin-left": "-25px",
+        "margin-top": "-25px",
+        "border-radius": "+50px",
+        "height": "+=50px",
+        "opacity": "0"
+    }, animate_time_with_flag);
     let id_to_remove = idl - max_count_of_figures;
-    setTimeout(()=>{$("#displaydiv  div:last").remove();},animation_time);
-    $(`#${id_to_remove}`).animate({"opacity": "0"}, animation_time);
+    setTimeout(()=>{$("#displaydiv  div:last").remove();},animate_time_with_flag);
+    $(`#${id_to_remove}`).animate({"opacity": "0"}, animate_time_with_flag);
     setTimeout(() => {
         $(`#${id_to_remove}`).remove()
-    }, animation_time);
+    }, animate_time_with_flag);
 }
 
 
