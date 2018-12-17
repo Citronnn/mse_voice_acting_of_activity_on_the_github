@@ -267,7 +267,7 @@ function infoonFig(info) {
             document.getElementById('repos').classList.add('error_filter_org');
         }
     }
-    else if(filter_flags.indexOf(`${jsinfo['type']}`) > -1) {
+    else {
         if (infoCount <= 50) {
             add_event(type, jsinfo);
             infoCount++;
