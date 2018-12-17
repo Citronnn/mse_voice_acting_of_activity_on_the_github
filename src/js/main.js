@@ -369,7 +369,7 @@ function filterChoose(filter_json) {
 function orgChoose() {
     let org = {
         'type':'filter',
-        'org':`${$("#organization").val()}`,
+        'owner':`${$("#organization").val()}`,
         'repo':`${$("#repos").val()}`
     };
     //alert(JSON.stringify(org))

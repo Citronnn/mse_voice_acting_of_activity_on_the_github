@@ -1,3 +1,4 @@
+import re
 from os import listdir
 from bottle import route, run, static_file, template
 from github3 import GitHub
@@ -9,7 +10,7 @@ from threading import Thread, Lock
 from typing import List, Dict
 from time import sleep
 from datetime import datetime, timedelta
-from json import dumps,loads
+from json import dumps, loads
 from json.decoder import JSONDecodeError
 from websocket_server import WebsocketServer, WebSocketHandler
 from pprint import pprint
@@ -400,13 +401,15 @@ class VisualGithubClient:
         # Это внутренний ID клиента, присваиваемый сервером
         self.id: int = _id
         self.handler: WebSocketHandler = handler
+        self.owner_filter = re.compile('')
+        self.repo_filter = re.compile('')
 
     def finish(self):
         try:
             self.handler.finish()
         except KeyError:
             DebugLog.error(f'Key error possibly double '
-                        f'deleting id = {self.id}')
+                           f'deleting id = {self.id}')
 
     def send(self, obj: dict) -> None:
         try:
@@ -416,10 +419,50 @@ class VisualGithubClient:
         except BrokenPipeError:
             DebugLog.error(f'Broken pipe error send id = {self.id}')
 
+    def pass_type_filters(self, event: dict):
+        ...
+
+    def set_type_filters(self, event: dict):
+        ...
+
+    def pass_regexp_filters(self, event: dict):
+        owner_match = self.owner_filter.fullmatch(event['owner']) is not None
+        repo_match = self.repo_filter.fullmatch(event['repo']) is not None
+        return owner_match and repo_match
+
+    def set_regexp_filters(self, owner: str, repo: str):
+        try:
+            owner = owner.lower()
+            if owner == '':
+                owner = '.*'
+            self.owner_filter = re.compile(owner, re.IGNORECASE)
+        except re.error:
+            self.send({
+                'type': 'error',
+                'where': 'owner'
+            })
+
+        try:
+            repo = repo.lower()
+            if repo == '':
+                repo = '.*'
+            self.repo_filter = re.compile(repo, re.IGNORECASE)
+        except re.error:
+            self.send({
+                'type': 'error',
+                'where': 'repo'
+            })
+
     def receive(self, srv: 'WebSocketServer', message: str, client: dict):
         print(message)
-        print("Ok")
-        # Действия
+        try:
+            json_msg = loads(message)
+            if json_msg['type'] == 'filter':
+                if 'owner' in json_msg and 'repo' in json_msg:
+                    self.set_regexp_filters(json_msg['owner'], json_msg['repo'])
+        except JSONDecodeError:
+            print('JSONDecodeError', message)
+            pass
 
     def left(self, srv: 'WebSocketServer') -> None:
         del srv.clients[self.id]
@@ -483,7 +526,8 @@ class WebSocketServer:
 
     def broadcast(self, message: dict):
         for client in list(self.clients.values()):
-            client.send(message)
+            if client.pass_regexp_filters(message):
+                client.send(message)
 
 
 def get_audio_files():

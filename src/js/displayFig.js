@@ -39,6 +39,16 @@ $(document).ready(function () {
         scrolledDown = $(this).scrollTop() >= $('#eventfield')[0].scrollHeight - $('#eventfield').height() - for_comfort_scroll;
     });
 
+    $(document).on('input', '#organization', function(){
+        orgChoose();
+        $('#organization').removeClass('error_filter_org')
+    });
+
+    $(document).on('input', '#repos', function(){
+        orgChoose();
+        $('#repos').removeClass('error_filter_org')
+    });
+
     $('#changecolors').click(function () {
         if(isLight) {
             $('body').css('background-color','#292929');
@@ -87,6 +97,8 @@ $(document).ready(function () {
                 button.removeClass('black').addClass('w3-white');
         }
     });
+
+    orgChoose();
 });
 
 setInterval(function(){
@@ -247,16 +259,13 @@ function infoonFig(info) {
    // alert(info +' '+ filter_flags);
     let jsinfo = JSON.parse(info);
 
-    if(jsinfo['type']==='error'){
-        if(jsinfo['where'][0].length === 3){
-            document.getElementById('organization').classList.add('error_filter_org');
-            document.getElementById('repos').classList.add('error_filter_org');
-        }
-        else if(jsinfo['where'] === 'org'){
+    if(jsinfo['type'] === 'error'){
+        if(jsinfo['where'] === 'owner') {
             document.getElementById('organization').classList.add('error_filter_org');
         }
-        else
+        else if (jsinfo['where'] === 'repo') {
             document.getElementById('repos').classList.add('error_filter_org');
+        }
     }
     else if(filter_flags.indexOf(`${jsinfo['type']}`) > -1) {
         if (infoCount <= 50) {
