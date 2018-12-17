@@ -403,6 +403,17 @@ class VisualGithubClient:
         self.handler: WebSocketHandler = handler
         self.owner_filter = re.compile('')
         self.repo_filter = re.compile('')
+        self.type_filters = {
+            'pull_request': False,
+            'push': False,
+            'issue': False,
+            'fork_repo': False,
+            'wiki_page': False,
+            'release': False,
+            'pull_request_review': False,
+            'commit_comment': False,
+            'issue_comment': False
+        }
 
     def finish(self):
         try:
@@ -419,11 +430,16 @@ class VisualGithubClient:
         except BrokenPipeError:
             DebugLog.error(f'Broken pipe error send id = {self.id}')
 
+    def pass_filters(self, event: dict):
+        return self.pass_type_filters(event) and self.pass_regexp_filters(event)
+
     def pass_type_filters(self, event: dict):
-        ...
+        return self.type_filters[event['type']]
 
     def set_type_filters(self, event: dict):
-        ...
+        del event['type']
+        for curr_type in event:
+            self.type_filters[curr_type] = event[curr_type]
 
     def pass_regexp_filters(self, event: dict):
         owner_match = self.owner_filter.fullmatch(event['owner']) is not None
@@ -454,15 +470,14 @@ class VisualGithubClient:
             })
 
     def receive(self, srv: 'WebSocketServer', message: str, client: dict):
-        print(message)
         try:
             json_msg = loads(message)
-            if json_msg['type'] == 'filter':
-                if 'owner' in json_msg and 'repo' in json_msg:
-                    self.set_regexp_filters(json_msg['owner'], json_msg['repo'])
+            if json_msg['type'] == 'filter_regexp':
+                self.set_regexp_filters(json_msg['owner'], json_msg['repo'])
+            elif json_msg['type'] == 'filter_types':
+                self.set_type_filters(json_msg)
         except JSONDecodeError:
             print('JSONDecodeError', message)
-            pass
 
     def left(self, srv: 'WebSocketServer') -> None:
         del srv.clients[self.id]
@@ -526,7 +541,7 @@ class WebSocketServer:
 
     def broadcast(self, message: dict):
         for client in list(self.clients.values()):
-            if client.pass_regexp_filters(message):
+            if client.pass_filters(message):
                 client.send(message)
 
 

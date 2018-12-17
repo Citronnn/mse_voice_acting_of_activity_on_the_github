@@ -173,7 +173,7 @@ function filterChange(id){
         button.removeClass('black').addClass('w3-white');
     }
 
-    let filter_json = {type: 'filter'};
+    let filter_json = {type: 'filter_types'};
     for (let i = 1; i <= 9; i++) {
         let button = $('#filt_' + i);
         if (button.hasClass('w3-white'))

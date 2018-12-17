@@ -347,7 +347,7 @@ var ws = new ReconnectingWebSocket(`ws://${ip}:${port}`);
 //Creation ReconnectingWebSocket
 function WebSocketInit() {
     ws.onopen = function() {
-        ws.send("Message to send");
+
     };
 
     ws.onmessage = function (evt) {
@@ -357,7 +357,7 @@ function WebSocketInit() {
     };
 
     ws.onclose = function() {
-        console.log("Connection is closed")
+
     };
 
 }
@@ -368,7 +368,7 @@ function filterChoose(filter_json) {
 //End of the websocket part
 function orgChoose() {
     let org = {
-        'type':'filter',
+        'type':'filter_regexp',
         'owner':`${$("#organization").val()}`,
         'repo':`${$("#repos").val()}`
     };
