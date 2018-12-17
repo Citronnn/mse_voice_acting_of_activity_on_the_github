@@ -13,7 +13,7 @@
 
 Установка необходимых библиотек для Python (необходим Python 3.6 или выше):  
 ```
-sudo pip3 install bottle github3.py websocket-server
+sudo pip3 install bottle github3.py websocket-server selenium
 ```
 
 Для запуска приложения следует перейти в директорию src и запустить backend.py 
@@ -24,4 +24,10 @@ cd src && sudo python3.6 backend.py
 далее приложение в браузере будет доступно по адресу 
 ```
 127.0.0.1:80
+```
+
+Для запуска selenium тестов следует перейти в директорию selenium_tests и запустить seleniumtest.py,
+при этом сервер должен быть уже запущен
+```
+cd selenium_tests && sudo python3.6 seleniumtest.py
 ```
