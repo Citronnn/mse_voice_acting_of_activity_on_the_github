@@ -43,18 +43,39 @@ def download_events():
     print("Requests remaining this hour:", git.ratelimit_remaining, '\n')
 
     last_event = None
+    seconds_to_sleep = 10
     while True:
         try:
             new_events: List[Event] = []
+            need_skip = False
+            need_reduce_sleep = False
+            need_increase_sleep = False
+            skipped_events = 0
+
             for event in git.all_events():
-                if last_event is None or event.id != last_event.id:
-                    new_events += [event]
+                if not need_skip:
+                    if last_event is None or event.id != last_event.id:
+                        new_events += [event]
+                    else:
+                        need_skip = True
                 else:
-                    break
+                    skipped_events += 1
+
+            if skipped_events == 0:
+                need_reduce_sleep = True
+            elif skipped_events > len(new_events):
+                need_increase_sleep = True
+
+            if need_reduce_sleep and seconds_to_sleep > 1:
+                seconds_to_sleep -= 1
+            if need_increase_sleep:
+                seconds_to_sleep += 1
+
             if len(new_events):
                 last_event = new_events[0]
             with event_queue_lock:
                 event_queue[0:0] = new_events
+
         except ServerError:
             print("Server error occurred")
         except ConnectionError:
@@ -67,10 +88,11 @@ def download_events():
                 pushes = sum(event.type == "PushEvent" for event in event_queue)
                 print(f'{event_queue[-1].created_at.time()}-'
                       f'{event_queue[0].created_at.time()}, '
-                      f'events: {len(event_queue)}, '
-                      f'pushes: {pushes}')
+                      f'events: {len(event_queue):>3}, '
+                      f'pushes: {pushes:>3}',
+                      f'slept: {seconds_to_sleep}s')
 
-        sleep(10)
+        sleep(seconds_to_sleep)
 
 
 def handle_events():
