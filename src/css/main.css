@@ -132,4 +132,16 @@ body{
     #bar{
         width: 100%;
     }
+    #soundslabel{
+        display: none;
+    }
+}
+#navbar{
+    height: 6vh;
+    border-bottom:2px solid;
+    background-color: white;
+}
+
+#selectsound{
+    background-color: white;
 }
