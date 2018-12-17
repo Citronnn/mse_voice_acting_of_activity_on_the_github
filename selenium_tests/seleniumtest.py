@@ -51,7 +51,6 @@ def test_theme_colors(driver):
 
 #Проверка слайдера звука (Прокрутить до конца, прокрутить до начала)
 def test_volume_slidebar(driver):
-    driver.set_window_size(1920, 1080)
     volinp = driver.find_element_by_id('volinp')
     assert volinp.get_attribute('value') == '20'
     move = ActionChains(driver)
@@ -114,6 +113,7 @@ if __name__ == '__main__':
     elif _platform == "darwin":
         driver = webdriver.Chrome('./chromedrivermac')
     driver.get('http://127.0.0.1')
+    driver.set_window_size(1200, 780)
     current_url = driver.current_url
     test_about(driver)
     test_theme_colors(driver)

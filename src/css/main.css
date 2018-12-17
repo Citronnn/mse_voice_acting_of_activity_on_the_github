@@ -77,6 +77,8 @@ body{
 
 #selectsound{
     border: 3px solid black;
+    transition: color 0.5s ease;
+    background-color: white;
 }
 #changecolors,#aboutbutton,#selectsound{
     margin-right: 10px;
@@ -142,6 +144,7 @@ body{
     background-color: white;
 }
 
-#selectsound{
-    background-color: white;
+#soundslabel{
+    transition: color 0.5s ease;
+    margin-right: 5px;
 }

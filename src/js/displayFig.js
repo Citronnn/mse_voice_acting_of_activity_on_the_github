@@ -109,6 +109,8 @@ function createFig(type,info) {
     else if(type === 1){
         rot = 45;
     }
+    $("#id01").css('z-index',`${idl+2}`)
+    $("#navbar").css('z-index',`${idl+1}`)
     $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: ${idl-1};width:${rand_array[2]}px;
         height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
         transform: rotate(${rot}deg);"></div>
