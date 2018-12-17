@@ -49,11 +49,12 @@ $(document).ready(function () {
             $('#soundslabel').css('color', '#ffffff');
             $('#selectsound').css('border', '3px solid white');
             $('#selectsound').css('color', '#ffffff');
+            $('#selectsound').css('background-color', '#000000');
             $('.optS').css('background-color', '#292929');
             $('#back_figure').css('background-color','#87918F');
             $('#changecolors').removeClass('w3-black').addClass('w3-white');
             $('#navbar').removeClass('navbar-light').addClass('navbar-dark');
-            $('#navbar').removeClass('bg-light').addClass('bg-dark');
+            $('#navbar').css('background-color', '#000000');
             $('#eventfield').css('color', '#ffffff');
             isLight = false;
         }
@@ -63,7 +64,8 @@ $(document).ready(function () {
             $('#back_figure').css('background-color','#F5F5DC');
             $('#selectsound').css('border', '3px solid black');
             $('#selectsound').css('color', '#000000');
-            $('.optS').css('background-color', '#ffffff');
+            $('#selectsound').css('background-color', '#ffffff');
+            $('.optS').css('background-color', '#ffffff' );
             $('#VA').css('color', '#000000');
             $('#IE').css('color', '#000000');
             $('#bar').css('color', '#000000');
@@ -71,7 +73,7 @@ $(document).ready(function () {
             $('#changecolors').html("Go to Dark");
             $('#changecolors').removeClass('w3-white').addClass('w3-black');
             $('#navbar').removeClass('navbar-dark').addClass('navbar-light');
-            $('#navbar').removeClass('bg-dark').addClass('bg-light');
+            $('#navbar').css('background-color', '#ffffff');
             $('#eventfield').css('color', '#000000');
 
             isLight = true;
