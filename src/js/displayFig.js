@@ -1,5 +1,8 @@
-const max_count_of_figures = 20;
+const max_count_of_figures = 50;
 const animation_time = 2000;
+let animation_flag = true;
+let last_events_count = 0;
+const lag_figures_per_second = 8;
 
 let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66","#FFCC00","#FFCC33",
     "#CC9933","#996600","#FF9900","#FF9933","#CC9966","#CC6600","#FFCC99","#FF9966","#FF6600",
@@ -29,7 +32,7 @@ let scrolledDown = false;
 
 window.onunload = function(){
     saveStateInCookies();
-}
+};
 
 $(document).ready(function () {
     getStateFromCookies();
@@ -37,13 +40,37 @@ $(document).ready(function () {
     $('#eventfield').scroll(function(){
         scrolledDown = $(this).scrollTop() >= $('#eventfield')[0].scrollHeight - $('#eventfield').height() - for_comfort_scroll;
     });
+
+    $(document).on('input', '#organization', function(){
+        orgChoose();
+        $('#organization').removeClass('error_filter_org')
+    });
+
+    $(document).on('input', '#repos', function(){
+        orgChoose();
+        $('#repos').removeClass('error_filter_org')
+    });
+
+    orgChoose();
 });
+
 setInterval(function(){
     if($(window).width()>$('#displaydiv').width())
         $('#displaydiv').css('min-width',$(window).width()*0.96);
-    if($(window).height()>$('#displaydiv').height())
-        $('#displaydiv').css('min-height',$(window).height()-55+'px');
 },0);
+
+// for calculating lag
+setInterval(() => {
+    if(last_events_count > lag_figures_per_second) {
+        animation_flag = false;
+    }
+    else if(last_events_count < lag_figures_per_second) {
+        animation_flag = true;
+    }
+    last_events_count = 0;
+}, 1000);
+
+
 let id=0;
 
 function changecolrs() {
@@ -86,6 +113,11 @@ function changecolrs() {
 }
 
 function createFig(type,info) {
+    if(audio_files == null) {
+        return;
+    }
+    last_events_count++;
+
     let rand_array = rands();
 
     playSound(rand_array[4], $('#volinp').val()/100);
@@ -99,6 +131,8 @@ function createFig(type,info) {
     else if(type === 1){
         rot = 45;
     }
+    $("#id01").css('z-index',`${idl+2}`)
+    $("#navbar").css('z-index',`${idl+1}`)
     $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: ${idl-1};width:${rand_array[2]}px;
         height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
         transform: rotate(${rot}deg);"></div>
@@ -106,24 +140,33 @@ function createFig(type,info) {
         height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
         transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};opacity: 0.9;">
         <p id ="text_figure" style="transform: rotate(${-rot}deg)">${info["repo"]}</p></a>`);
+    let animate_time_with_flag = animation_time;
+    if(!animation_flag){
+        animate_time_with_flag=0;
+    }
     $(`#back_figure`).animate({
         "width": "+=50px",
-        "margin-left":"-25px",
-        "margin-top":"-25px",
-        "border-radius":"+50px",
-        "height":"+=50px",
-        "opacity":"0"
-    },animation_time);
+        "margin-left": "-25px",
+        "margin-top": "-25px",
+        "border-radius": "+50px",
+        "height": "+=50px",
+        "opacity": "0"
+    }, animate_time_with_flag);
     let id_to_remove = idl - max_count_of_figures;
-    setTimeout(()=>{$("#displaydiv  div:last").remove();},animation_time);
-    $(`#${id_to_remove}`).animate({"opacity": "0"}, animation_time);
+    setTimeout(()=>{$("#displaydiv  div:last").remove();},animate_time_with_flag);
+    $(`#${id_to_remove}`).animate({"opacity": "0"}, animate_time_with_flag);
     setTimeout(() => {
         $(`#${id_to_remove}`).remove()
-    }, animation_time);
+    }, animate_time_with_flag);
 }
 
+function get_curr_category() {
+    let select = document.getElementById("selectsound");
+    return select.options[select.selectedIndex].value;
+}
 
 function rands(){
+    let audio_size = audio_files[get_curr_category()];
     let rands_array=[];
     rands_array.push(Math.floor(Math.random() * ($('#displaydiv').width() - 250)+100));
     rands_array.push(Math.floor(Math.random() * ($('#displaydiv').height() - 250)+100));
@@ -144,7 +187,7 @@ function filterChange(id){
         button.removeClass('black').addClass('w3-white');
     }
 
-    let filter_json = {type: 'filter'};
+    let filter_json = {type: 'filter_types'};
     for (let i = 1; i <= 9; i++) {
         let button = $('#filt_' + i);
         if (button.hasClass('w3-white'))
@@ -175,7 +218,7 @@ function filterChange(id){
 }
 
 function use_all_filters_flags() {
-    let filter_json = {type:'filter'};
+    let filter_json = {type:'filter_types'};
     filter_flags=[];
     if($('#filt_0').hasClass('w3-white')){
         $('#filt_0').removeClass('w3-white').addClass('black');
@@ -230,18 +273,21 @@ function infoonFig(info) {
    // alert(info +' '+ filter_flags);
     let jsinfo = JSON.parse(info);
 
-    if(jsinfo['type']==='error'){
-        if(jsinfo['where'][0].length === 3){
-            document.getElementById('organization').classList.add('error_filter_org');
-            document.getElementById('repos').classList.add('error_filter_org');
+    if(jsinfo['type'] === 'init') {
+        audio_files = JSON.parse(jsinfo['categories']);
+        for (let i in audio_files) {
+            $('#selectsound').append(`<option class=\"optS\" value=\"${i}\">${i}</option>`);
         }
-        else if(jsinfo['where'] === 'org'){
-            document.getElementById('organization').classList.add('error_filter_org');
-        }
-        else
-            document.getElementById('repos').classList.add('error_filter_org');
     }
-    else if(filter_flags.indexOf(`${jsinfo['type']}`) > -1) {
+    else if(jsinfo['type'] === 'error') {
+        if(jsinfo['where'] === 'owner') {
+            document.getElementById('organization').classList.add('error_filter_org');
+        }
+        else if (jsinfo['where'] === 'repo') {
+            document.getElementById('repos').classList.add('error_filter_org');
+        }
+    }
+    else {
         if (infoCount <= 50) {
             add_event(type, jsinfo);
             infoCount++;
@@ -255,7 +301,8 @@ function infoonFig(info) {
 let cached_sounds = {};
 
 function playSound(index, volume) {
-    let file = "audio/" + index + ".mp3";
+    let category = get_curr_category();
+    let file = "audio/" + category + '/' + index + ".mp3";
     if(file in cached_sounds){
         cached_sounds[file].volume(volume);
         cached_sounds[file].play();
@@ -333,8 +380,15 @@ function getStateFromCookies() {
         $('#IE').css('color', '#ffffff');
         $('#bar').css('color', '#ffffff');
         $('#changecolors').html("Go to Light");
+        $('#soundslabel').css('color', '#ffffff');
+        $('#selectsound').css('border', '3px solid white');
+        $('#selectsound').css('color', '#ffffff');
+        $('#selectsound').css('background-color', '#000000');
+        $('.optS').css('background-color', '#292929');
         $('#back_figure').css('background-color','#87918F');
         $('#changecolors').removeClass('w3-black').addClass('w3-white');
+        $('#navbar').removeClass('navbar-light').addClass('navbar-dark');
+        $('#navbar').css('background-color', '#000000');
         $('#eventfield').css('color', '#ffffff');
         isLight = false;
         for (let i=0; i<11; i++){
@@ -349,11 +403,18 @@ function getStateFromCookies() {
         $('body').css('background-color','white');
         $('#displaydiv').css('background-color', '#e8e8e7');
         $('#back_figure').css('background-color','#F5F5DC');
+        $('#selectsound').css('border', '3px solid black');
+        $('#selectsound').css('color', '#000000');
+        $('#selectsound').css('background-color', '#ffffff');
+        $('.optS').css('background-color', '#ffffff' );
         $('#VA').css('color', '#000000');
         $('#IE').css('color', '#000000');
         $('#bar').css('color', '#000000');
+        $('#soundslabel').css('color', '#000000');
         $('#changecolors').html("Go to Dark");
         $('#changecolors').removeClass('w3-white').addClass('w3-black');
+        $('#navbar').removeClass('navbar-dark').addClass('navbar-light');
+        $('#navbar').css('background-color', '#ffffff');
         $('#eventfield').css('color', '#000000');
 
         isLight = true;
