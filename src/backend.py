@@ -572,10 +572,10 @@ class WebSocketServer:
             client['client'].left(self)
         except KeyError:
             DebugLog.error(f'Key error possibly double deleting '
-                        f'in client left id = {client["id"]}')
+                           f'in client left id = {client["id"]}')
         except ValueError:
             DebugLog.error(f'Value error possibly double deleting '
-                        f'in client left id = {client["id"]}')
+                           f'in client left id = {client["id"]}')
 
     # Called when a client sends a message
     def message_received(self, client, _, message):

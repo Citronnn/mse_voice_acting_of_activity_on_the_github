@@ -204,7 +204,7 @@ function filterChange(id){
 }
 
 function use_all_filters_flags() {
-    let filter_json = {type:'filter'};
+    let filter_json = {type:'filter_types'};
     filter_flags=[];
     if($('#filt_0').hasClass('w3-white')){
         $('#filt_0').removeClass('w3-white').addClass('black');
