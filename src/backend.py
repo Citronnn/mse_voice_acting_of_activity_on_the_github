@@ -108,9 +108,10 @@ def download_events():
                 pushes = sum(event.type == "PushEvent" for event in event_queue)
                 print(f'{event_queue[-1].created_at.time()}-'
                       f'{event_queue[0].created_at.time()}, '
-                      f'events: {len(event_queue):>3}, '
-                      f'pushes: {pushes:>3}',
-                      f'slept: {seconds_to_sleep}s')
+                      f'events: {len(event_queue):>3} '
+                      f'pushes: {pushes:>3} '
+                      f'sleep: {seconds_to_sleep:>2}s '
+                      f'limit: {git.ratelimit_remaining:>4}')
 
         sleep(seconds_to_sleep)
 
