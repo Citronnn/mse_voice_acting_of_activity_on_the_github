@@ -11,7 +11,7 @@
     <script>
         const ip = '{{ip}}';
         const port = '{{port}}';
-        const audio_size = parseInt('{{audio_size}}');
+        audio_files = null;
     </script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
@@ -23,7 +23,7 @@
     <script src="js/main.js"></script>
     <link rel='stylesheet' href='css/displayFig.css'>
 </head>
-<body onload="WebSocketInit()">
+<body>
 
     <div id="id01" class="w3-modal">
         <div class="w3-modal-content">
@@ -52,11 +52,7 @@
                     <div class="my-3 w3-large" id="soundslabel">Sounds: </div>
                 </li>
                 <li class="nav-item">
-                    <select id ="selectsound" class="my-2 w3-btn">
-                        <option class="optS" value="bass">Bass Drum</option>
-                        <option class="optS" value="guitar">Guitar</option>
-                        <option class="optS" value="mandolin">Mandolin</option>
-                    </select>
+                    <select id ="selectsound" class="my-2 w3-btn"></select>
                 </li>
                 <li class="nav-item my-mx-3" >
                     <button class=" w3-btn my-2 w3-black" id ="changecolors">Go to Dark</button>
@@ -88,13 +84,9 @@
        <!-- <button class="w3-btn w3-green w3-margin-bottom" id="pushOnly" onclick="filter_push()">Switch Pushes only</button>
         <button class="w3-btn w3-green w3-margin-bottom" id="pullOnly" onclick="filter_pull()">Swith Pull requests only</button>  -->
         <div>
-            <p>Organization and repo</p>
-            <input id="organization" type="text"
-                   onfocus="document.getElementById('organization').classList.remove('error_filter_org');"
-                   onblur="orgChoose();">
-            / <input id="repos"
-                     onfocus="document.getElementById('repos').classList.remove('error_filter_org');"
-                     onblur="orgChoose()">
+            <p>Owner and repo</p>
+            <input id="organization" type="text">
+            / <input id="repos" type="text">
         </div>
         <br>
         <div class="w3-padding" id="eventfield"></div>
