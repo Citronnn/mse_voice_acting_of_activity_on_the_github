@@ -1,6 +1,8 @@
-const max_count_of_figures = 20;
+const max_count_of_figures = 50;
 const animation_time = 2000;
 let animation_flag = true;
+let last_events_count = 0;
+const lag_figures_per_second = 8;
 
 let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66","#FFCC00","#FFCC33",
     "#CC9933","#996600","#FF9900","#FF9933","#CC9966","#CC6600","#FFCC99","#FF9966","#FF6600",
@@ -105,6 +107,19 @@ setInterval(function(){
     if($(window).width()>$('#displaydiv').width())
         $('#displaydiv').css('min-width',$(window).width()*0.96);
 },0);
+
+// for calculating lag
+setInterval(() => {
+    if(last_events_count > lag_figures_per_second) {
+        animation_flag = false;
+    }
+    else if(last_events_count < lag_figures_per_second) {
+        animation_flag = true;
+    }
+    last_events_count = 0;
+}, 1000);
+
+
 let id=0;
 
 
@@ -112,6 +127,7 @@ function createFig(type,info) {
     if(audio_files == null) {
         return;
     }
+    last_events_count++;
 
     let rand_array = rands();
 
