@@ -628,8 +628,7 @@ if __name__ == '__main__':
     def index():
         return template('frontend.html',
                         ip=WebSocketServer.ip,
-                        port=WebSocketServer.port,
-                        audio_files=audio_lengths)
+                        port=WebSocketServer.port)
 
     @route('/<file:path>')
     def static_serve(file: str):
