@@ -34,6 +34,26 @@ def split_repo_name(full_repo_name):
     return repo_owner, repo_subname
 
 
+def remove_duplicates():
+    if len(list_to_send) < 2:
+        return
+
+    duplicate = list_to_send[-1]
+    for num, event in enumerate(list_to_send[-2::-1], 1):
+        if event['type'] != duplicate['type']:
+            continue
+        if event['owner'] != duplicate['owner']:
+            continue
+        if event['repo'] != duplicate['repo']:
+            continue
+        if event['time'] != duplicate['time']:
+            continue
+
+        list_to_send.pop()
+        print('remove', num, event['type'], event['owner'], event['repo'], event['time'])
+        return
+
+
 def download_events():
     global event_queue
 
@@ -104,6 +124,9 @@ def handle_events():
         if len(event_queue) == 0:
             sleep(1)
             continue
+
+        with events_to_send_lock:
+            remove_duplicates()
 
         with event_queue_lock:
             event: Event = event_queue.pop()
