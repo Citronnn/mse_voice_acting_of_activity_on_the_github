@@ -30,7 +30,7 @@ let scrolledDown = false;
 
 window.onunload = function(){
     saveStateInCookies();
-}
+};
 
 $(document).ready(function () {
     getStateFromCookies();
@@ -109,6 +109,10 @@ let id=0;
 
 
 function createFig(type,info) {
+    if(audio_files == null) {
+        return;
+    }
+
     let rand_array = rands();
 
     playSound(rand_array[4], $('#volinp').val()/100);
@@ -151,8 +155,13 @@ function createFig(type,info) {
     }, animate_time_with_flag);
 }
 
+function get_curr_category() {
+    let select = document.getElementById("selectsound");
+    return select.options[select.selectedIndex].value;
+}
 
 function rands(){
+    let audio_size = audio_files[get_curr_category()];
     let rands_array=[];
     rands_array.push(Math.floor(Math.random() * ($('#displaydiv').width() - 250)+100));
     rands_array.push(Math.floor(Math.random() * ($('#displaydiv').height() - 250)+100));
@@ -259,7 +268,13 @@ function infoonFig(info) {
    // alert(info +' '+ filter_flags);
     let jsinfo = JSON.parse(info);
 
-    if(jsinfo['type'] === 'error'){
+    if(jsinfo['type'] === 'init') {
+        audio_files = JSON.parse(jsinfo['categories']);
+        for (let i in audio_files) {
+            $('#selectsound').append(`<option class=\"optS\" value=\"${i}\">${i}</option>`);
+        }
+    }
+    else if(jsinfo['type'] === 'error') {
         if(jsinfo['where'] === 'owner') {
             document.getElementById('organization').classList.add('error_filter_org');
         }
@@ -281,7 +296,8 @@ function infoonFig(info) {
 let cached_sounds = {};
 
 function playSound(index, volume) {
-    let file = "audio/" + index + ".mp3";
+    let category = get_curr_category();
+    let file = "audio/" + category + '/' + index + ".mp3";
     if(file in cached_sounds){
         cached_sounds[file].volume(volume);
         cached_sounds[file].play();

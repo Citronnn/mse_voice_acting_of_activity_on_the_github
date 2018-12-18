@@ -1,5 +1,6 @@
 import re
 from os import listdir
+from os.path import isdir, isfile, join
 from bottle import route, run, static_file, template
 from github3 import GitHub
 from github3.events import Event
@@ -50,7 +51,6 @@ def remove_duplicates():
             continue
 
         list_to_send.pop()
-        print('remove', num, event['type'], event['owner'], event['repo'], event['time'])
         return
 
 
@@ -460,6 +460,11 @@ class VisualGithubClient:
             'issue_comment': False
         }
 
+        self.send({
+            'type': 'init',
+            'categories': audio_lengths
+        })
+
     def finish(self):
         try:
             self.handler.finish()
@@ -591,10 +596,18 @@ class WebSocketServer:
 
 
 def get_audio_files():
-    files = []
-    for file in listdir('audio'):
-        if file.endswith('.mp3'):
-            files += ['audio/' + file]
+    files = {}
+    for folder in listdir('audio'):
+        full_folder = join('audio', folder)
+        if not isdir(full_folder):
+            continue
+        for file in listdir(full_folder):
+            full_file = join(full_folder, file)
+            if not isfile(full_file) or not file.endswith('.mp3'):
+                continue
+            if folder not in files:
+                files[folder] = []
+            files[folder] += [full_file]
     return files
 
 
@@ -607,17 +620,24 @@ if __name__ == '__main__':
     Thread(target=send_events, name="Send events").start()
 
     audio_files = get_audio_files()
+    audio_lengths = {folder: len(files) for folder, files in audio_files.items()}
+    audio_lengths = dumps(audio_lengths)
 
     @route('/')
     def index():
-        return template('frontend.html', ip=WebSocketServer.ip, port=WebSocketServer.port, audio_size=len(audio_files))
+        return template('frontend.html',
+                        ip=WebSocketServer.ip,
+                        port=WebSocketServer.port,
+                        audio_files=audio_lengths)
 
     @route('/<file:path>')
     def static_serve(file: str):
         if file.endswith('.mp3'):
-            filename = file.split('/')[-1]  # without path
+            path = file.split('/')
+            filename = path[-1]
+            folder = path[-2]
             file_num = filename.split('.')[0]  # without ".mp3"
-            file = audio_files[int(file_num)]
+            file = audio_files[folder][int(file_num)]
 
         return static_file(file, root='.')
 
