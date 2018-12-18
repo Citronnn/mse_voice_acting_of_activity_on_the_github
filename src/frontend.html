@@ -40,7 +40,6 @@
             </div>
         </div>
     </div>
-
     <nav id="navbar" class="navbar navbar-expand-lg navbar-light fixed-top" >
         <div id="VA" class="navbar-brand" >Visual activity on GitHub</div>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"  aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +54,7 @@
                     <select id ="selectsound" class="my-2 w3-btn"></select>
                 </li>
                 <li class="nav-item my-mx-3" >
-                    <button class=" w3-btn my-2 w3-black" id ="changecolors">Go to Dark</button>
+                    <button class=" w3-btn my-2 w3-black" onclick="changecolrs()" id ="changecolors">Go to Dark</button>
                 </li>
                 <li class="nav-item">
                     <div id="bar" class="my-1" style="" >Volume<br> <label><input class="slider" id="volinp" type="range" min="0" max="100" step="1" value="20"></label></div>
@@ -84,9 +83,9 @@
        <!-- <button class="w3-btn w3-green w3-margin-bottom" id="pushOnly" onclick="filter_push()">Switch Pushes only</button>
         <button class="w3-btn w3-green w3-margin-bottom" id="pullOnly" onclick="filter_pull()">Swith Pull requests only</button>  -->
         <div>
-            <p>Owner and repo</p>
-            <input id="organization" type="text">
-            / <input id="repos" type="text">
+            <p id="OR" style="font-size: x-large">Special Organization and/or Repository</p>
+            <input class="w3-padding-small w3-round-large" placeholder="owner" id="organization" type="text">
+            <b id="slash">/</b> <input class="w3-padding-small w3-round-large" placeholder="repository" id="repos">
         </div>
         <br>
         <div class="w3-padding" id="eventfield"></div>
