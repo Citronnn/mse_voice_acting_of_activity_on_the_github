@@ -259,6 +259,16 @@ function use_all_filters_flags() {
     filterChoose(filter_json);
 }
 
+function changehovercolor(clas){
+    if(!isLight)
+        $(`.${clas}`).css('background-color','#333333')
+    else
+        $(`.${clas}`).css('background-color','#f2f2f2')
+}
+function changeunhovercolor(clas){
+    $(`.${clas}`).css('background-color','inherit')
+}
+
 function add_event(type, jsinfo) {
     let date = new Date();
     let year = date.getFullYear();
@@ -272,7 +282,7 @@ function add_event(type, jsinfo) {
     if (seconds < 10)
         seconds = '0' + seconds;
     let date_string = year + '-' + month + '-' + day + '  ' + hours + ':' + minutes + ':' + seconds + ' - ';
-    $("#eventfield").append(`<div id="one_event"><img src="../icons/${jsinfo['type']}.png" width="25px" height="25px"> 
+    $("#eventfield").append(`<div id="one_event" class="${infoCount}" onmouseout="changeunhovercolor(${infoCount});" onmousemove="changehovercolor(${infoCount});"><img src="../icons/${jsinfo['type']}.png" width="25px" height="25px"> 
         ${date_string} <a href="${jsinfo["url"]}" 
     target="_blank">${jsinfo["owner"]} / ${jsinfo["repo"]}</div>`);
     if (scrolledDown)
@@ -306,6 +316,7 @@ function infoonFig(info) {
         } else {
             $("#one_event").remove();
         }
+
         add_event(type, jsinfo);
     }
 }
