@@ -626,7 +626,7 @@ if __name__ == '__main__':
 
     @route('/')
     def index():
-        return template(open('frontend.html').read(),
+        return template('frontend.html',
                         ip=WebSocketServer.ip,
                         port=WebSocketServer.port)
 
