@@ -53,9 +53,10 @@ $(document).ready(function () {
 
     orgChoose();
 });
-
 setInterval(function(){
     if($(window).width()>$('#displaydiv').width())
+        $('#displaydiv').css('min-width',$(window).width()*0.96);
+    if($('#navbar').height()>$('#displaydiv').width())
         $('#displaydiv').css('min-width',$(window).width()*0.96);
 },0);
 

@@ -80,9 +80,10 @@ body{
     transition: color 0.5s ease;
     background-color: white;
 }
-#changecolors,#aboutbutton,#selectsound{
+#changecolors,#aboutbutton,#selectsound,#bar{
     margin-right: 10px;
-    height: 42px;
+    height: 40px;
+    margin-top: 7px;
 }
 .slider {
     -webkit-appearance: none;
@@ -140,6 +141,7 @@ body{
 }
 #navbar{
     height: 6vh;
+    min-height: 53px;
     border-bottom:2px solid;
     background-color: white;
 }

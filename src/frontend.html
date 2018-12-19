@@ -51,17 +51,23 @@
                     <div class="my-3 w3-large" id="soundslabel">Sounds: </div>
                 </li>
                 <li class="nav-item">
-                    <select id ="selectsound" class="my-2 w3-btn"></select>
+                    <div>
+                        <select id ="selectsound" class="w3-btn"></select>
+                    </div>
                 </li>
                 <li class="nav-item my-mx-3" >
-                    <button class=" w3-btn my-2 w3-black" onclick="changecolrs()" id ="changecolors">Go to Dark</button>
+                    <div>
+                        <button class=" w3-btn  w3-black" onclick="changecolrs()" id ="changecolors">Go to Dark</button>
+                    </div>
                 </li>
                 <li class="nav-item">
-                    <div id="bar" class="my-1" style="" >Volume<br> <label><input class="slider" id="volinp" type="range" min="0" max="100" step="1" value="20"></label></div>
+                    <div>
+                        <div id="bar" class="" style="" >Volume<br> <label><input class="slider" id="volinp" type="range" min="0" max="100" step="1" value="20"></label></div>
+                    </div>
                 </li>
                 <li class="nav-item ">
                     <div class="" >
-                     <button class="w3-btn w3-green my-2 " style="width:114px" id="aboutbutton" onclick="document.getElementById('id01').style.display='block'">About</button>
+                     <button class="w3-btn w3-green " style="width:114px" id="aboutbutton" onclick="document.getElementById('id01').style.display='block'">About</button>
                     </div>
                 </li>
             </ul>
