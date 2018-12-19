@@ -406,6 +406,7 @@ function getStateFromCookies() {
         $('body').css('background-color','#292929');
         $('#displaydiv').css('background-color','#363535');
         $('#VA').css('color', '#ffffff');
+        $('#OR').css('color', '#ffffff');
         $('#IE').css('color', '#ffffff');
         $('#bar').css('color', '#ffffff');
         $('#changecolors').html("Go to Light");
@@ -437,6 +438,7 @@ function getStateFromCookies() {
         $('#selectsound').css('background-color', '#ffffff');
         $('.optS').css('background-color', '#ffffff' );
         $('#VA').css('color', '#000000');
+        $('#OR').css('color', '#000000');
         $('#IE').css('color', '#000000');
         $('#bar').css('color', '#000000');
         $('#soundslabel').css('color', '#000000');
