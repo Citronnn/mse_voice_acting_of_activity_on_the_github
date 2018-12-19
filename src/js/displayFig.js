@@ -58,9 +58,9 @@ $(document).ready(function () {
 
 
 setInterval(function(){
-    if($(window).width()>$('#displaydiv').width())
+    if($(window).width()*0.96>$('#displaydiv').width())
         $('#displaydiv').css('min-width',$(window).width()*0.96);
-    if($(window).height()>$('#displaydiv').height())
+    if($(window).height()*0.95>$('#displaydiv').height())
         $('#displaydiv').css('min-height',$(window).height()*0.95);
 },0);
 
@@ -153,7 +153,9 @@ function createFig(type,info) {
         <a href="${info["url"]}" target="_blank" id="${idl}" class="a_figure"  style="z-index: ${idl};width:${rand_array[2]}px;
         height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
         transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};opacity: 0.9;">
-        <p id ="text_figure" style="transform: rotate(${-rot}deg)"><b>${info["owner"]} / ${info["repo"]}</b></p></a>`);
+        <p id ="text_figure" style="transform: rotate(${-rot}deg); word-wrap: break-word;
+         overflow: hidden;width:${rand_array[2]-10}px;
+         max-height:${rand_array[2]-10}px " ><b>${info["repo"]}</b></p></a>`);
     let animate_time_with_flag = animation_time;
     if(!animation_flag){
         animate_time_with_flag=0;
@@ -184,9 +186,9 @@ function get_curr_category() {
 function rands(){
     let audio_size = audio_files[get_curr_category()];
     let rands_array=[];
-    rands_array.push(Math.floor(Math.random() * ($('#displaydiv').width() - 250)+100));
-    rands_array.push(Math.floor(Math.random() * ($('#displaydiv').height() - 250)+100));
-    rands_array.push(Math.floor(Math.random() * (150 - 40 + 1)+40));
+    rands_array.push(Math.floor(Math.random() * ($('#displaydiv').width() - 280)+100));
+    rands_array.push(Math.floor(Math.random() * ($('#displaydiv').height() - 280)+100));
+    rands_array.push(Math.floor(Math.random() * (180 - 70 + 1)+70));
     rands_array.push(Math.floor(Math.random() * (colors.length)));
     rands_array.push(Math.floor(Math.random() * audio_size));
     return rands_array;
