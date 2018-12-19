@@ -63,7 +63,7 @@ def download_events():
     print("Requests remaining this hour:", git.ratelimit_remaining, '\n')
 
     last_event = None
-    seconds_to_sleep = 10
+    seconds_to_sleep = 4
     while True:
         try:
             new_events: List[Event] = []
@@ -81,9 +81,9 @@ def download_events():
                 else:
                     skipped_events += 1
 
-            if skipped_events == 0:
+            if skipped_events / len(new_events) < 0.4:
                 need_reduce_sleep = True
-            elif skipped_events > len(new_events):
+            elif skipped_events / len(new_events) > 1:
                 need_increase_sleep = True
 
             if need_reduce_sleep and seconds_to_sleep > 1:
