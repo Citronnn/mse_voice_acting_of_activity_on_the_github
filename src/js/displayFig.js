@@ -26,6 +26,7 @@ let colors=["#FFFFCC","#FFFF99","#FFFF66","#FFFF33","#FFFF00","#CCCC00","#FFCC66
     "#999900"];
 
 let isLight = true;
+let show_icons_on_figures = false;
 let infoCount = 0;
 
 let scrolledDown = false;
@@ -132,7 +133,7 @@ function createFig(type,info) {
     }
     last_events_count++;
 
-    let rand_array = rands();
+    let rand_array = rands(info);
 
     playSound(rand_array[4], $('#volinp').val()/100);
 
@@ -145,17 +146,28 @@ function createFig(type,info) {
     else if(type === 1){
         rot = 45;
     }
-    $("#id01").css('z-index',`${idl+2}`)
-    $("#navbar").css('z-index',`${idl+1}`)
-    $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: ${idl-1};width:${rand_array[2]}px;
-        height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
-        transform: rotate(${rot}deg);"></div>
-        <a href="${info["url"]}" target="_blank" id="${idl}" class="a_figure"  style="z-index: ${idl};width:${rand_array[2]}px;
-        height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
-        transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};opacity: 0.9;">
-        <p id ="text_figure" style="transform: rotate(${-rot}deg); word-wrap: break-word;
-         overflow: hidden;width:${rand_array[2]-10}px;
-         max-height:${rand_array[2]-10}px " ><b>${info["repo"]}</b></p></a>`);
+    $("#id01").css('z-index',`${idl+2}`);
+    $("#navbar").css('z-index',`${idl+1}`);
+    if (show_icons_on_figures)
+        $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: ${idl-1};width:${rand_array[2]}px;
+            height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
+            transform: rotate(${rot}deg);"></div>
+            <a href="${info["url"]}" target="_blank" id="${idl}" class="a_figure"  style="z-index: ${idl};width:${rand_array[2]}px;
+            height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
+            transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};opacity: 0.9;">
+            <p id ="text_figure" style="transform: rotate(${-rot}deg); word-wrap: break-word;
+             overflow: hidden;width:${rand_array[2]-10}px;
+             max-height:${rand_array[2]-10}px " ><b><img src="../icons/${info['type']}.png" width="25px" height="25px"><br> ${info["repo"]}</b></p></a>`);
+    else
+        $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: ${idl-1};width:${rand_array[2]}px;
+            height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
+            transform: rotate(${rot}deg);"></div>
+            <a href="${info["url"]}" target="_blank" id="${idl}" class="a_figure"  style="z-index: ${idl};width:${rand_array[2]}px;
+            height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
+            transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};opacity: 0.9;">
+            <p id ="text_figure" style="transform: rotate(${-rot}deg); word-wrap: break-word;
+             overflow: hidden;width:${rand_array[2]-10}px;
+             max-height:${rand_array[2]-10}px " ><b>${info["repo"]}</b></p></a>`);
     let animate_time_with_flag = animation_time;
     if(!animation_flag){
         animate_time_with_flag=0;
@@ -183,12 +195,16 @@ function get_curr_category() {
     return select.options[select.selectedIndex].value;
 }
 
-function rands(){
+function rands(info){
+    let length = info["repo"].length;
+    if (length >= 17)
+        length = 17;
+    length /= Math.sqrt(2)*0.75;
     let audio_size = audio_files[get_curr_category()];
     let rands_array=[];
     rands_array.push(Math.floor(Math.random() * ($('#displaydiv').width() - 280)+100));
     rands_array.push(Math.floor(Math.random() * ($('#displaydiv').height() - 280)+100));
-    rands_array.push(Math.floor(Math.random() * (180 - 70 + 1)+70));
+    rands_array.push(Math.floor(length*6/100 * (180 - 70 + 1)+70));
     rands_array.push(Math.floor(Math.random() * (colors.length)));
     rands_array.push(Math.floor(Math.random() * audio_size));
     return rands_array;
