@@ -81,17 +81,19 @@ def download_events():
                 else:
                     skipped_events += 1
 
-            if skipped_events / len(new_events) < 0.4:
-                need_reduce_sleep = True
-            elif skipped_events / len(new_events) > 1:
-                need_increase_sleep = True
+            new_events_count = len(new_events)
+            if new_events_count > 0:
+                if skipped_events / new_events_count < 0.4:
+                    need_reduce_sleep = True
+                elif skipped_events / new_events_count > 1:
+                    need_increase_sleep = True
 
             if need_reduce_sleep and seconds_to_sleep > 1:
                 seconds_to_sleep -= 1
             if need_increase_sleep:
                 seconds_to_sleep += 1
 
-            if len(new_events):
+            if new_events_count:
                 last_event = new_events[0]
             with event_queue_lock:
                 event_queue[0:0] = new_events
