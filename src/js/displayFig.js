@@ -36,6 +36,8 @@ window.onunload = function(){
 
 $(document).ready(function () {
     getStateFromCookies();
+    $('#displaydiv').css('min-height',$('#displaydiv').height());
+
     let for_comfort_scroll = 60;
     $('#eventfield').scroll(function(){
         scrolledDown = $(this).scrollTop() >= $('#eventfield')[0].scrollHeight - $('#eventfield').height() - for_comfort_scroll;
@@ -53,11 +55,13 @@ $(document).ready(function () {
 
     orgChoose();
 });
+
+
 setInterval(function(){
     if($(window).width()>$('#displaydiv').width())
         $('#displaydiv').css('min-width',$(window).width()*0.96);
-    if($('#navbar').height()>$('#displaydiv').width())
-        $('#displaydiv').css('min-width',$(window).width()*0.96);
+    if($(window).height()>$('#displaydiv').height())
+        $('#displaydiv').css('min-height',$(window).height()*0.95);
 },0);
 
 // for calculating lag
@@ -149,7 +153,7 @@ function createFig(type,info) {
         <a href="${info["url"]}" target="_blank" id="${idl}" class="a_figure"  style="z-index: ${idl};width:${rand_array[2]}px;
         height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
         transform: rotate(${rot}deg);background-color: ${colors[rand_array[3]]};opacity: 0.9;">
-        <p id ="text_figure" style="transform: rotate(${-rot}deg)"><b>${info["repo"]}</b></p></a>`);
+        <p id ="text_figure" style="transform: rotate(${-rot}deg)"><b>${info["owner"]} / ${info["repo"]}</b></p></a>`);
     let animate_time_with_flag = animation_time;
     if(!animation_flag){
         animate_time_with_flag=0;
