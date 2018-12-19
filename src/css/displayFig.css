@@ -6,7 +6,11 @@
     justify-content: center; /*Центрирование по горизонтали*/
     align-items: center;
     text-align: center;
-
+    text-shadow:
+            -1px -1px 1px #000000,
+            1px -1px 1px #000000,
+            -1px 1px 1px #000000,
+            1px 1px 1px #000000;
 }
 #displaydiv{
     width: 96%;
