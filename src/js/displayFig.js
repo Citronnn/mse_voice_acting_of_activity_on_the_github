@@ -287,14 +287,13 @@ function infoonFig(info) {
             document.getElementById('repos').classList.add('error_filter_org');
         }
     }
-    else {
+    else if(filter_flags.indexOf(`${jsinfo['type']}`) > -1)  {
         if (infoCount <= 50) {
-            add_event(type, jsinfo);
             infoCount++;
         } else {
             $("#one_event").remove();
-            add_event(type, jsinfo);
         }
+        add_event(type, jsinfo);
     }
 }
 
