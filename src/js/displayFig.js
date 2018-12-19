@@ -153,8 +153,8 @@ function createFig(type,info) {
     if(!animation_flag){
         animate_time_with_flag=0;
     }
-    document.getElementById('text_figure').style.color = `${hexToComplimentary(colors[rand_array[3]])}`
-
+    let color_obv=increase_brightness(colors[rand_array[3]],50);
+    document.getElementById('text_figure').style.color = `${hexToComplimentary(color_obv)}`
     $(`#back_figure`).animate({
         "width": "+=50px",
         "margin-left": "-25px",
@@ -506,9 +506,7 @@ function hexToComplimentary(hex){
     var rgb = 'rgb(' + (hex = hex.replace('#', '')).match(new RegExp('(.{' + hex.length/3 + '})', 'g')).map(function(l) { return parseInt(hex.length%2 ? l+l : l, 16); }).join(',') + ')';
     // Get array of RGB values
     rgb = rgb.replace(/[^\d,]/g, '').split(',');
-
     var r = rgb[0], g = rgb[1], b = rgb[2];
-
     // Convert RGB to HSL
     r /= 255.0;
     g /= 255.0;
@@ -568,4 +566,22 @@ function hexToComplimentary(hex){
     // Convert r b and g values to hex
     rgb = b | (g << 8) | (r << 16);
     return "#" + (0x1000000 | rgb).toString(16).substring(1);
+}
+function increase_brightness(hex, percent){
+    // strip the leading # if it's there
+    hex = hex.replace(/^\s*#|\s*$/g, '');
+
+    // convert 3 char codes --> 6, e.g. `E0F` --> `EE00FF`
+    if(hex.length == 3){
+        hex = hex.replace(/(.)/g, '$1$1');
+    }
+
+    var r = parseInt(hex.substr(0, 2), 16),
+        g = parseInt(hex.substr(2, 2), 16),
+        b = parseInt(hex.substr(4, 2), 16);
+
+    return '#' +
+        ((0|(1<<8) + r + (256 - r) * percent / 100).toString(16)).substr(1) +
+        ((0|(1<<8) + g + (256 - g) * percent / 100).toString(16)).substr(1) +
+        ((0|(1<<8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
 }
