@@ -153,7 +153,7 @@ function createFig(type,info) {
     $("#id01").css('z-index',`${idl+2}`);
     $("#navbar").css('z-index',`${idl+1}`);
     if (show_icons_on_figures)
-        $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: ${idl-1};width:${rand_array[2]}px;
+        $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: ${idl};width:${rand_array[2]}px;
             height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
             transform: rotate(${rot}deg);"></div>
             <a href="${info["url"]}" target="_blank" id="${idl}" class="a_figure"  style="z-index: ${idl};width:${rand_array[2]}px;
@@ -163,7 +163,7 @@ function createFig(type,info) {
              overflow: hidden;width:${rand_array[2]-10}px;
              max-height:${rand_array[2]-10}px " ><b><img src="../icons/${info['type']}.png" width="25px" height="25px"><br> ${info["repo"]}</b></p></a>`);
     else
-        $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: ${idl-1};width:${rand_array[2]}px;
+        $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: ${idl};width:${rand_array[2]}px;
             height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
             transform: rotate(${rot}deg);"></div>
             <a href="${info["url"]}" target="_blank" id="${idl}" class="a_figure"  style="z-index: ${idl};width:${rand_array[2]}px;
