@@ -7,6 +7,7 @@ from github3.events import Event
 from github3.exceptions import NotFoundError
 from github3.exceptions import ServerError
 from github3.exceptions import ConnectionError
+from github3.exceptions import ForbiddenError
 from threading import Thread, Lock
 from typing import List, Dict
 from time import sleep
@@ -104,6 +105,8 @@ def download_events():
             print("Connection error occurred")
         except ConnectionAbortedError:
             print("Connection aborted error occurred")
+        except ForbiddenError:
+            print("Forbidden Error")
 
         with event_queue_lock:
             if len(event_queue):
