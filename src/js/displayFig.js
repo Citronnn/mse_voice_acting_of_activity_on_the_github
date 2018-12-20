@@ -86,6 +86,8 @@ function changecolrs() {
         $('#VA').css('color', '#ffffff');
         $('#IE').css('color', '#ffffff');
         $('#bar').css('color', '#ffffff');
+        $('#OR').css('color', '#ffffff');
+        $('#slash').css('color', '#ffffff');
         $('#changecolors').html("Go to Light");
         $('#soundslabel').css('color', '#ffffff');
         $('#selectsound').css('border', '3px solid white');
@@ -107,6 +109,8 @@ function changecolrs() {
         $('#selectsound').css('color', '#000000');
         $('#selectsound').css('background-color', '#ffffff');
         $('.optS').css('background-color', '#ffffff' );
+        $('#OR').css('color', '#000000');
+        $('#slash').css('color', '#000000');
         $('#VA').css('color', '#000000');
         $('#IE').css('color', '#000000');
         $('#bar').css('color', '#000000');
@@ -304,7 +308,7 @@ function add_event(type, jsinfo) {
     if (seconds < 10)
         seconds = '0' + seconds;
     let date_string = year + '-' + month + '-' + day + '  ' + hours + ':' + minutes + ':' + seconds + ' - ';
-    $("#eventfield").append(`<div id="one_event" class="${infoCount}" onmouseout="changeunhovercolor(${infoCount});" onmousemove="changehovercolor(${infoCount});"><img src="../icons/${jsinfo['type']}.png" width="25px" height="25px"> 
+    $("#eventfield").append(`<div id="one_event" class="${id}" onmouseout="changeunhovercolor(${id});" onmousemove="changehovercolor(${id});"><img src="../icons/${jsinfo['type']}.png" width="25px" height="25px"> 
         ${date_string} <a href="${jsinfo["url"]}" 
     target="_blank">${jsinfo["owner"]} / ${jsinfo["repo"]}</div>`);
     if (scrolledDown)
@@ -425,6 +429,8 @@ function getStateFromCookies() {
         $('#OR').css('color', '#ffffff');
         $('#IE').css('color', '#ffffff');
         $('#bar').css('color', '#ffffff');
+        $('#OR').css('color', '#ffffff');
+        $('#slash').css('color', '#ffffff');
         $('#changecolors').html("Go to Light");
         $('#soundslabel').css('color', '#ffffff');
         $('#selectsound').css('border', '3px solid white');
@@ -457,6 +463,8 @@ function getStateFromCookies() {
         $('#OR').css('color', '#000000');
         $('#IE').css('color', '#000000');
         $('#bar').css('color', '#000000');
+        $('#OR').css('color', '#000000');
+        $('#slash').css('color', '#000000');
         $('#soundslabel').css('color', '#000000');
         $('#changecolors').html("Go to Dark");
         $('#changecolors').removeClass('w3-white').addClass('w3-black');
