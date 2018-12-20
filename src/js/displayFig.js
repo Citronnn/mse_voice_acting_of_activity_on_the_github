@@ -86,6 +86,8 @@ function changecolrs() {
         $('#VA').css('color', '#ffffff');
         $('#IE').css('color', '#ffffff');
         $('#bar').css('color', '#ffffff');
+        $('#OR').css('color', '#ffffff');
+        $('#slash').css('color', '#ffffff');
         $('#changecolors').html("Go to Light");
         $('#soundslabel').css('color', '#ffffff');
         $('#selectsound').css('border', '3px solid white');
@@ -107,6 +109,8 @@ function changecolrs() {
         $('#selectsound').css('color', '#000000');
         $('#selectsound').css('background-color', '#ffffff');
         $('.optS').css('background-color', '#ffffff' );
+        $('#OR').css('color', '#000000');
+        $('#slash').css('color', '#000000');
         $('#VA').css('color', '#000000');
         $('#IE').css('color', '#000000');
         $('#bar').css('color', '#000000');
@@ -149,7 +153,7 @@ function createFig(type,info) {
     $("#id01").css('z-index',`${idl+2}`);
     $("#navbar").css('z-index',`${idl+1}`);
     if (show_icons_on_figures)
-        $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: ${idl-1};width:${rand_array[2]}px;
+        $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: ${idl};width:${rand_array[2]}px;
             height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
             transform: rotate(${rot}deg);"></div>
             <a href="${info["url"]}" target="_blank" id="${idl}" class="a_figure"  style="z-index: ${idl};width:${rand_array[2]}px;
@@ -159,7 +163,7 @@ function createFig(type,info) {
              overflow: hidden;width:${rand_array[2]-10}px;
              max-height:${rand_array[2]-10}px " ><b><img src="../icons/${info['type']}.png" width="25px" height="25px"><br> ${info["repo"]}</b></p></a>`);
     else
-        $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: ${idl-1};width:${rand_array[2]}px;
+        $("#displaydiv").prepend(`<div id="back_figure" class="box" style="z-index: ${idl};width:${rand_array[2]}px;
             height:${rand_array[2]}px;border-radius:${br}px;left:${rand_array[0]}px;top:${rand_array[1]}px;
             transform: rotate(${rot}deg);"></div>
             <a href="${info["url"]}" target="_blank" id="${idl}" class="a_figure"  style="z-index: ${idl};width:${rand_array[2]}px;
@@ -304,7 +308,7 @@ function add_event(type, jsinfo) {
     if (seconds < 10)
         seconds = '0' + seconds;
     let date_string = year + '-' + month + '-' + day + '  ' + hours + ':' + minutes + ':' + seconds + ' - ';
-    $("#eventfield").append(`<div id="one_event" class="${infoCount}" onmouseout="changeunhovercolor(${infoCount});" onmousemove="changehovercolor(${infoCount});"><img src="../icons/${jsinfo['type']}.png" width="25px" height="25px"> 
+    $("#eventfield").append(`<div id="one_event" class="${id}" onmouseout="changeunhovercolor(${id});" onmousemove="changehovercolor(${id});"><img src="../icons/${jsinfo['type']}.png" width="25px" height="25px"> 
         ${date_string} <a href="${jsinfo["url"]}" 
     target="_blank">${jsinfo["owner"]} / ${jsinfo["repo"]}</div>`);
     if (scrolledDown)
@@ -425,6 +429,8 @@ function getStateFromCookies() {
         $('#OR').css('color', '#ffffff');
         $('#IE').css('color', '#ffffff');
         $('#bar').css('color', '#ffffff');
+        $('#OR').css('color', '#ffffff');
+        $('#slash').css('color', '#ffffff');
         $('#changecolors').html("Go to Light");
         $('#soundslabel').css('color', '#ffffff');
         $('#selectsound').css('border', '3px solid white');
@@ -457,6 +463,8 @@ function getStateFromCookies() {
         $('#OR').css('color', '#000000');
         $('#IE').css('color', '#000000');
         $('#bar').css('color', '#000000');
+        $('#OR').css('color', '#000000');
+        $('#slash').css('color', '#000000');
         $('#soundslabel').css('color', '#000000');
         $('#changecolors').html("Go to Dark");
         $('#changecolors').removeClass('w3-white').addClass('w3-black');
