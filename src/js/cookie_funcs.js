@@ -31,8 +31,6 @@ function  deleteCookie(name) {
     setCookie(name, '', -1);
 }
 
-
-
 function saveStateInCookies() {
     setCookie("isLight", isLight);
     setCookie("volume", $("#volinp").val());
@@ -128,9 +126,6 @@ function getStateFromCookies() {
         $("#repos").val(repos);
     }
     let checkCounter = 0;
-
-
-
     if(getCookie("filt_0") == "true") {
         use_all_filters_flags();
 
