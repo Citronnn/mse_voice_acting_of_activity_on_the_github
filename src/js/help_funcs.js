@@ -50,10 +50,11 @@ function changecolrs() {
     }
 }
 
-
 setInterval(function(){
     if($(window).width()*0.96>$('#displaydiv').width())
         $('#displaydiv').css('min-width',$(window).width()*0.96);
+    if($(window).width()*0.96>$('#eventfield').width())
+        $('#eventfield').css('min-width',$(window).width()*0.96);
     if($(window).height()*0.95>$('#displaydiv').height())
         $('#displaydiv').css('min-height',$(window).height()*0.95);
 },0);

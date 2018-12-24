@@ -3,12 +3,8 @@
     width: 96%;
     height: 620px;
     margin-bottom: 10px;
-}
-
-
-
-#displaydiv{
-    transition: background-color 0.5s ease;
+    overflow-y:scroll;
+    text-align: left;
 }
 
 #VA{
@@ -29,10 +25,6 @@
 }
 #id01{
     z-index: 3000;
-}
-#eventfield{
-    overflow-y:scroll;
-    text-align: left;
 }
 
 .black{
